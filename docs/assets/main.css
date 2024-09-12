@@ -26,3 +26,13 @@ footer {
     background: #333;
     color: #fff;
 }
+
+footer a {
+  text-decoration: none;
+  color: #fff; /* Ensure the text color is white */
+  margin-left: 10px;
+}
+
+footer a i {
+  color: #fff; /* Set the icon color to white */
+}
