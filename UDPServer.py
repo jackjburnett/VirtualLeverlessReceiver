@@ -32,9 +32,8 @@ def start_udp_server(ip, port):
         server_address = (ip, port)
         print(f"Starting VirtualLeverless Receiver on {ip}:{port}")
         sock.bind(server_address)
-
+        print("Waiting for a message...")
         while True:
-            print("Waiting for a message...")
             # Receive data
             data, address = sock.recvfrom(4096)
 
