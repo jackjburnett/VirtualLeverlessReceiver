@@ -2,6 +2,8 @@ import time
 
 import vgamepad as vg
 
+import data_store.ACTION_MAP as AM
+
 
 # Function to parse the message and simulate the corresponding gamepad input
 def parse_gamepad(message, gamepad):
@@ -13,17 +15,13 @@ def parse_gamepad(message, gamepad):
     gamepad (vgamepad.VX360Gamepad): The virtual gamepad object to control.
     """
     try:
-        # Parse the message and perform the corresponding gamepad action
-        if message == "A_PRESS":
-            # Press the A button on the virtual gamepad
-            gamepad.press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
-        elif message == "A_RELEASE":
-            # Release the A button
-            gamepad.release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
-        elif message == "LEFT_JOYSTICK_50_50":
-            # Move the left joystick to (50%, 50%)
-            gamepad.left_joystick_float(x_value_float=0.5, y_value_float=0.5)
-        # Add more cases for other buttons, triggers, or joystick movements as needed
+        # Retrieve the lambda function based on the message or use a default function
+        action = AM.ACTION_MAP.get(
+            message, lambda g: print(f"Unknown action: {message}")
+        )
+
+        # Execute the action function
+        action(gamepad)
 
         # Send the updates to the virtual gamepad
         gamepad.update()
@@ -37,9 +35,43 @@ if __name__ == "__main__":
     # Create a test instance of the VX360Gamepad
     TestGamepad = vg.VX360Gamepad()
 
-    # Simulate pressing the A button
-    parse_gamepad("A_PRESS", TestGamepad)
-    time.sleep(1)  # Wait for 1 second
+    # Prepare all actions as a list
+    actions = [
+        "A_PRESS",
+        "A_RELEASE",
+        "B_PRESS",
+        "B_RELEASE",
+        "X_PRESS",
+        "X_RELEASE",
+        "Y_PRESS",
+        "Y_RELEASE",
+        "LEFT_SHOULDER_PRESS",
+        "LEFT_SHOULDER_RELEASE",
+        "RIGHT_SHOULDER_PRESS",
+        "RIGHT_SHOULDER_RELEASE",
+        "BACK_PRESS",
+        "BACK_RELEASE",
+        "START_PRESS",
+        "START_RELEASE",
+        "LEFT_THUMB_PRESS",
+        "LEFT_THUMB_RELEASE",
+        "RIGHT_THUMB_PRESS",
+        "RIGHT_THUMB_RELEASE",
+        "DPAD_UP_PRESS",
+        "DPAD_UP_RELEASE",
+        "DPAD_DOWN_PRESS",
+        "DPAD_DOWN_RELEASE",
+        "DPAD_LEFT_PRESS",
+        "DPAD_LEFT_RELEASE",
+        "DPAD_RIGHT_PRESS",
+        "DPAD_RIGHT_RELEASE",
+        "LEFT_TRIGGER_PRESS",
+        "LEFT_TRIGGER_RELEASE",
+        "RIGHT_TRIGGER_PRESS",
+        "RIGHT_TRIGGER_RELEASE",
+    ]
 
-    # Simulate releasing the A button
-    parse_gamepad("A_RELEASE", TestGamepad)
+    # Simulate pressing and releasing all buttons and triggers
+    for act in actions:
+        parse_gamepad(act, TestGamepad)
+        time.sleep(1)  # Wait for 1 second between actions
