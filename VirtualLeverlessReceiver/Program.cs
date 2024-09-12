@@ -8,9 +8,7 @@ class Program
         {
             return; // Exit if arguments are invalid
         }
-
-        InputSimulator inputSimulator = new InputSimulator();
-        UdpServer udpServer = new UdpServer(inputSimulator, ipAddress, port);
+        UdpServer udpServer = new UdpServer(ipAddress, port);
         udpServer.Start();
     }
 }

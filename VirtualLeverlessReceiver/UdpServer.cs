@@ -4,7 +4,7 @@ using System.Text;
 
 namespace VirtualLeverlessReceiver;
 
-public class UdpServer(InputSimulator inputSimulator, string ipAddress, int port)
+public class UdpServer(string ipAddress, int port)
 {
     public void Start()
     {
@@ -26,9 +26,7 @@ public class UdpServer(InputSimulator inputSimulator, string ipAddress, int port
                 // Handle the message and simulate key press if needed
                 if (message.Equals("SPACEBAR", StringComparison.OrdinalIgnoreCase))
                 {
-                    inputSimulator.SendKeyDown(0x20); // Spacebar virtual key code
-                    Thread.Sleep(100); // Brief delay to simulate the key press duration
-                    inputSimulator.SendKeyUp(0x20);
+                    //
                 }
             }
         }
