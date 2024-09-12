@@ -28,10 +28,16 @@ if __name__ == "__main__":
         description="VirtualLeverless Receiver (Python UDP server)"
     )
     parser.add_argument(
-        "--ip", type=str, default="127.0.0.1", help="IP address to bind the server (default: 127.0.0.1)"
+        "--ip",
+        type=str,
+        default="127.0.0.1",
+        help="IP address to bind the server (default: 127.0.0.1)",
     )
     parser.add_argument(
-        "--port", type=int, default=8080, help="Port number to bind the server (default: 12345)"
+        "--port",
+        type=int,
+        default=8080,
+        help="Port number to bind the server (default: 8080)",
     )
 
     # Parse arguments
