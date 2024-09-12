@@ -3,13 +3,7 @@
 ## Overview
 
 VirtualLeverless Receiver is a simple Python-based UDP server that enables [VirtualLeverless](https://github.com/jackjburnett/VirtualLeverless) to communicate with a Windows PC.
-VirtualLeverless Receiver allows you to host a UDP Server that create a virtual controller for each IP address that connects to it. 
-Each virtual controller uses the [VigEm Client](https://github.com/nefarius/ViGEmClient) to simulate the pressing and releasing of buttons and triggers of an Xbox 360 Controller.
-
-## Features
-
-- **Xbox 360 Mapping**: 
-- **Multiple Connections**: The UDP server can handle multiple connections at once.
+VirtualLeverless Receiver creates a virtual controller for each IP address that connects to it, using the [VigEm Client](https://github.com/nefarius/ViGEmClient) to simulate the pressing and releasing of buttons and triggers of an Xbox 360 Controller.
 
 ## Installation
 
