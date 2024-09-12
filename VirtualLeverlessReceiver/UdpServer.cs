@@ -8,6 +8,7 @@ public class UdpServer(InputSimulator inputSimulator, string ipAddress, int port
 {
     public void Start()
     {
+        Console.WriteLine($"Setting up VirtualLeverless Receiver on {ipAddress}:{port}...");
         UdpClient udpServer = new UdpClient(new IPEndPoint(IPAddress.Parse(ipAddress), port));
         IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, port);
 
