@@ -21,7 +21,7 @@ def validate_port(port):
         )
 
 
-# TODO: COMMENT
+# Runs VirtualLeverless Receiver, checking for arguments.
 if __name__ == "__main__":
     # Set up argument parsing for IP and Port
     parser = argparse.ArgumentParser(

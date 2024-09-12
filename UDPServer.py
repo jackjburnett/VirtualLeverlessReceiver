@@ -4,11 +4,11 @@ import threading
 import GamepadManager
 import GamepadParser
 
-# TODO: COMMENT
+# Used to lock dictionary to ensure thread safety, currently not used.
 gamepad_dict_lock = threading.Lock()
 
 
-# TODO: COMMENT
+# Function for each message, used by threads
 def handle_message(data, address):
     # This function will run in a separate thread to handle each message
     ip_address = address[0]
@@ -22,7 +22,7 @@ def handle_message(data, address):
     GamepadParser.parse_gamepad(message, gamepad)
 
 
-# TODO: COMMENT
+# Function that starts the server and awaits messages
 def start_udp_server(ip, port):
     try:
         # Create a UDP socket
@@ -45,6 +45,6 @@ def start_udp_server(ip, port):
         sock.close()
 
 
-# TODO: COMMENT
+# Tests the script if executed standalone, replace the values with the IP and Port you are testing
 if __name__ == "__main__":
     start_udp_server("192.168.0.17", 8080)

@@ -4,7 +4,7 @@ import vgamepad as vg
 gamepads = {}
 
 
-# TODO: COMMENT
+# Function for getting/creating a gamepad based on name (IP Address)
 def get_or_create_gamepad(name):
     # If the gamepad already exists for this IP, return it
     if name in gamepads:
@@ -17,7 +17,7 @@ def get_or_create_gamepad(name):
         return gamepad
 
 
-# TODO: COMMENT
+# Function for safely deleting gamepads
 def delete_gamepad(name):
     # If the gamepad exists for the given IP, release all controls and remove it
     if name in gamepads:
@@ -34,7 +34,7 @@ def delete_gamepad(name):
         print(f"No gamepad found for {name}")
 
 
-# TODO: COMMENT
+# Tests the script if executed standalone
 if __name__ == "__main__":
     TestGamepad = get_or_create_gamepad("Gamepad")
     print(gamepads)

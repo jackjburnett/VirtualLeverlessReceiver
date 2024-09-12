@@ -31,6 +31,7 @@ def parse_gamepad(message, gamepad):
         print(f"Error parsing message: {e}")
 
 
+# Tests the script if executed standalone
 if __name__ == "__main__":
     # Create a test instance of the VX360Gamepad
     TestGamepad = vg.VX360Gamepad()
