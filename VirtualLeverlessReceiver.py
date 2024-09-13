@@ -29,15 +29,25 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--ip",
+        "--ipaddress",
         type=str,
         default="127.0.0.1",
         help="IP address to bind the server (default: 127.0.0.1)",
     )
     parser.add_argument(
         "--port",
+        "--p",
         type=int,
         default=8080,
         help="Port number to bind the server (default: 8080)",
+    )
+
+    parser.add_argument(
+        "--logging",
+        "--l",
+        action="store_true",
+        default=False,
+        help="Enables logging of data to files (omitted by default)",
     )
 
     # Parse arguments
@@ -48,4 +58,4 @@ if __name__ == "__main__":
     validate_port(args.port)
 
     # Start the UDP server with provided IP and Port
-    UDPServer.start_udp_server(args.ip, args.port)
+    UDPServer.start_udp_server(args.ip, args.port, args.logging)
