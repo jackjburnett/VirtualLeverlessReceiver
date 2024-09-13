@@ -22,8 +22,11 @@ def handle_message(data, address, log_file=None):
     print(f"Received message from {ip_address}: {message}")
     if log_file is not None:
         file = open(log_file, "a")
-        date = datetime.datetime.now()
-        file.write(f"{date}: Received message from {ip_address}: {message}")
+        time = (
+            datetime.datetime.now().strftime("%H:%M:%S")
+            + f".{datetime.datetime.now().microsecond // 1000:03d}"
+        )
+        file.write(f"{time}: Received message from {ip_address}: {message}")
         file.close()
     GamepadParser.parse_gamepad(message, gamepad)
 
@@ -38,9 +41,13 @@ def start_udp_server(ip, port, logging=False):
         server_address = (ip, port)
         print(f"Starting VirtualLeverless Receiver on {ip}:{port}")
         if logging:
-            log_file = "{ip}-{date:%Y-%m-%d_%H:%M:%S}.txt".format(
-                ip=ip, date=datetime.datetime.now()
-            )
+            now = datetime.datetime.now()
+            date = now.strftime("%Y%m%d-%H%M%S")
+            time = now.strftime("%H:%M:%S") + f".{now.microsecond // 1000:03d}"
+            log_file = f"logs/{date}.txt"
+            file = open(log_file, "a")
+            file.write(f"{time}: Starting VirtualLeverless Receiver on {ip}:{port}\n")
+            file.close()
         else:
             log_file = None
         sock.bind(server_address)
