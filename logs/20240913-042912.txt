@@ -1,2 +1,0 @@
-04:29:12.749: Starting VirtualLeverless Receiver on 192.168.0.17:8080
-04:29:12.807: Starting VirtualLeverless Receiver on 192.168.0.17:8080
