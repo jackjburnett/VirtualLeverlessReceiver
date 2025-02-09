@@ -1,4 +1,4 @@
- # VirtualLeverless Receiver
+# VirtualLeverless Receiver
 
 ## Overview
 
@@ -26,17 +26,32 @@ python VirtualLeverlessReceiver.py --ip <IP_ADDRESS> --port <PORT>
 ```
 
 ### Arguments
+
 - **--ip**: The IP address to bind the server to. Default is 127.0.0.1.
 - **--port**: The port number to bind the server to. Default is 8080.
 
+### Connecting
+
+To connect to the VirtualLeverless Receiver, send UDP requests to the specified IP address and port using the available commands.
+The receiver will process the requests and simulate the corresponding actions on the virtual controller.
+
+### Available Commands
+
+A list of available commands can be found in [data_store/ACTION_MAP_XBOX.py](./data_store/ACTION_MAP_XBOX.py).
+These commands can be used to simulate various actions on the virtual controller.
+
 ### Example
+
 To start the server on IP 192.168.1.10 and port 8080, use:
+
 ```bash
 python script_name.py --ip 192.168.1.10 --port 8080
 ```
 
 ## License
+
 This project is licensed under the GNU General Public License (GPL). See the [LICENSE](LICENSE) file for details.
 
 ## Contact
+
 For any issues or questions, please contact [jackjburnett](https://github.com/jackjburnett).

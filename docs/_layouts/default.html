@@ -1,27 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ page.title }} - {{ site.title }}</title>
-    <link rel="stylesheet" href="{{ site.baseurl }}/assets/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
+    <link rel="stylesheet" href="{{ site.baseurl }}/assets/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
     <header>
-        <h1>{{ site.title }}</h1>
-        <nav>
-            <a href="{{ site.baseurl }}/">Home</a>
-        </nav>
+      <h1>{{ site.title }}</h1>
+      <nav>
+        <a href="{{ site.baseurl }}/">Home</a>
+      </nav>
     </header>
-    <main>
-        {{ content }}
-    </main>
+    <main>{{ content }}</main>
     <footer>
-  <p>&copy; {{ site.time | date: "%Y" }} {{ site.title }}</p>
-  <a href="https://github.com/jackjburnett/VirtualLeverlessReceiver/" target="_blank" title="View on GitHub">
-    <i class="fab fa-github"></i>
-  </a>
-</footer>
-</body>
+      <p>&copy; {{ site.time | date: "%Y" }} {{ site.title }}</p>
+      <a
+        href="https://github.com/jackjburnett/VirtualLeverlessReceiver/"
+        target="_blank"
+        title="View on GitHub"
+      >
+        <i class="fab fa-github"></i>
+      </a>
+    </footer>
+  </body>
 </html>
