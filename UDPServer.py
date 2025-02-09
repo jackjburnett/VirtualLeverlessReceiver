@@ -9,17 +9,29 @@ import GamepadParser
 gamepad_dict_lock = threading.Lock()
 
 
-# Function for each message, used by threads
 def handle_message(data, address, log_file=None):
-    # This function will run in a separate thread to handle each message
-    ip_address = address[0]
-    message = data.decode("utf-8").strip()  # Get message and trim whitespace
+    """
+    This function runs in a separate thread to handle each incoming message.
 
-    # Get or create the gamepad object for this IP address
+    Parameters:
+    data (bytes): The incoming message data
+    address (tuple): The client's IP address and port
+    log_file (str): The log file to write to (optional)
+    """
+
+    # Get the user's IP address from the address tuple
+    ip_address = address[0]
+
+    # Decode the message data from bytes to a string and strip whitespace
+    message = data.decode("utf-8").strip()
+
+    # Get or create the gamepad object for the user's IP address
     gamepad = GamepadManager.get_or_create_gamepad(ip_address)
 
-    # Parse the message and update the corresponding gamepad
+    # Print the received message to the console
     print(f"Received message from {ip_address}: {message}")
+
+    # If logging is enabled, write the message to the log file
     if log_file is not None:
         file = open(log_file, "a")
         time = (
@@ -28,11 +40,13 @@ def handle_message(data, address, log_file=None):
         )
         file.write(f"{time}: Received message from {ip_address}: {message}")
         file.close()
+    # Parse the message and update the corresponding gamepad
     GamepadParser.parse_gamepad(message, gamepad)
 
 
 # Function that starts the server and awaits messages
 def start_udp_server(ip, port, logging=False):
+    sock = None  # Initialize sock to None
     try:
         # Create a UDP socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
