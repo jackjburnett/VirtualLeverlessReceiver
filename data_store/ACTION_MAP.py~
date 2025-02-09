@@ -115,8 +115,7 @@ ACTION_MAP = {
         x_value_float=0.0, y_value_float=-1.0
     ),
     "LEFT_JOYSTICK_RESET": lambda gamepad: gamepad.left_joystick_float(
-        x_value_float=0.0, y_value_float=0.0
-    ),
+        x_value_float=0.0, y_value_float=0.0),
     "RIGHT_JOYSTICK_LEFT": lambda gamepad: gamepad.right_joystick_float(
         x_value_float=-1.0, y_value_float=0.0
     ),
@@ -130,6 +129,5 @@ ACTION_MAP = {
         x_value_float=0.0, y_value_float=-1.0
     ),
     "RIGHT_JOYSTICK_RESET": lambda gamepad: gamepad.right_joystick_float(
-        x_value_float=0.0, y_value_float=0.0
-    ),
+        x_value_float=0.0, y_value_float=0.0),
 }

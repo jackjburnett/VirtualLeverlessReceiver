@@ -74,12 +74,10 @@ if __name__ == "__main__":
         "LEFT_JOYSTICK_RIGHT",
         "LEFT_JOYSTICK_UP",
         "LEFT_JOYSTICK_DOWN",
-        "LEFT_JOYSTICK_RESET",
         "RIGHT_JOYSTICK_LEFT",
         "RIGHT_JOYSTICK_RIGHT",
         "RIGHT_JOYSTICK_UP",
         "RIGHT_JOYSTICK_DOWN",
-        "RIGHT_JOYSTICK_RESET",
     ]
 
     # Simulate pressing and releasing all buttons and triggers
