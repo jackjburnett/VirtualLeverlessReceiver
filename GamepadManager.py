@@ -5,7 +5,7 @@ gamepads = {}
 
 # Gamepad types
 XBOX_GAMEPAD = vg.VX360Gamepad
-DS4_GAMEPAD = vg.VDS4Gamepad
+# DS4_GAMEPAD = vg.VDS4Gamepad TODO: Find way of letting players decide gamepad type
 
 
 def get_or_create_gamepad(name):
