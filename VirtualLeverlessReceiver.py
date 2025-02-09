@@ -6,6 +6,15 @@ import UDPServer
 
 # Validates IP Address using the ipaddress module
 def validate_ip(ip):
+    """
+    Validate an IP address to ensure it is in the correct format.
+
+    Args:
+        ip (str): The IP address to validate.
+
+    Raises:
+        ValueError: If the IP address is invalid.
+    """
     try:
         # This will raise an exception if the IP is invalid
         ipaddress.ip_address(ip)
@@ -15,6 +24,15 @@ def validate_ip(ip):
 
 # Validates port by checking it is within correct range
 def validate_port(port):
+    """
+    Validate a port number to ensure it is within the valid range.
+
+    Args:
+        port (int): The port number to validate.
+
+    Raises:
+        ValueError: If the port number is invalid.
+    """
     if not (0 <= port <= 65535):
         raise ValueError(
             f"Invalid port number: {port}. Port must be between 0 and 65535."
