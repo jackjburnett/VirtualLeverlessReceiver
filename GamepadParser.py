@@ -1,43 +1,74 @@
+"""
+GamepadParser.py
+
+This script handles gamepad input and updates a virtual gamepad accordingly.
+It uses the vgamepad library to interact with the virtual gamepad.
+
+Dependencies:
+    - vgamepad
+    - data_store.ACTION_MAP_DS4
+"""
+
 import time
 
 import vgamepad as vg
 
-import data_store.ACTION_MAP as AM
+import data_store.ACTION_MAP_DS4 as AMD
+import data_store.ACTION_MAP_XBOX as AMX
 
 
-# Function to parse the message and simulate the corresponding gamepad input
 def parse_gamepad(message, gamepad):
     """
-    Parses the incoming message and performs the appropriate action on the gamepad.
+    Parse a gamepad message and update the virtual gamepad accordingly.
 
-    Args:
-    message (str): The incoming message indicating the action (e.g., 'A_PRESS', 'A_RELEASE').
-    gamepad (vgamepad.VX360Gamepad): The virtual gamepad object to control.
+    Parameters:
+        message (str): The gamepad message to parse.
+        gamepad (vg.VX360Gamepad or vg.VDS4Gamepad): The virtual gamepad to update.
     """
-    try:
-        # Retrieve the lambda function based on the message or use a default function
-        action = AM.ACTION_MAP.get(
-            message, lambda g: print(f"Unknown action: {message}")
-        )
+    # Check the type of gamepad and perform actions accordingly
+    if isinstance(gamepad, vg.VX360Gamepad):
+        # Perform actions specific to VX360Gamepad
+        try:
+            # Retrieve the lambda function based on the message or use a default function
+            action = AMX.ACTION_MAP.get(
+                message, lambda g: print(f"Unknown action: {message}")
+            )
 
-        # Execute the action function
-        action(gamepad)
+            # Execute the action function
+            action(gamepad)
 
-        # Send the updates to the virtual gamepad
-        gamepad.update()
+            # Send the updates to the virtual gamepad
+            gamepad.update()
 
-    except Exception as e:
-        # Handle any potential errors that occur during parsing or gamepad interaction
-        print(f"Error parsing message: {e}")
+        except Exception as e:
+            # Handle any potential errors that occur during parsing or gamepad interaction
+            print(f"Error parsing message: {e}")
+    elif isinstance(gamepad, vg.VDS4Gamepad):
+        # Perform actions specific to VDS4Gamepad
+        try:
+            # Retrieve the lambda function based on the message or use a default function
+            action = AMD.ACTION_MAP.get(
+                message, lambda g: print(f"Unknown action: {message}")
+            )
+
+            # Execute the action function
+            action(gamepad)
+
+            # Send the updates to the virtual gamepad
+            gamepad.update()
+
+        except Exception as e:
+            # Handle any potential errors that occur during parsing or gamepad interaction
+            print(f"Error parsing message: {e}")
+    else:
+        print(f"Invalid gamepad type. Expected vg.VX360Gamepad or vg.VDS4Gamepad.")
 
 
 # Tests the script if executed standalone
+# For testing, go to https://hardwaretester.com/gamepad
 if __name__ == "__main__":
-    # Create a test instance of the VX360Gamepad
-    TestGamepad = vg.VX360Gamepad()
-
     # Prepare all actions as a list
-    actions = [
+    x_actions = [
         "A_PRESS",
         "A_RELEASE",
         "B_PRESS",
@@ -81,8 +112,57 @@ if __name__ == "__main__":
         "RIGHT_JOYSTICK_DOWN",
         "RIGHT_JOYSTICK_RESET",
     ]
-
-    # Simulate pressing and releasing all buttons and triggers
-    for act in actions:
+    d_actions = [
+        "CROSS_PRESS",
+        "CROSS_RELEASE",
+        "CIRCLE_PRESS",
+        "CIRCLE_RELEASE",
+        "TRIANGLE_PRESS",
+        "TRIANGLE_RELEASE",
+        "SQUARE_PRESS",
+        "SQUARE_RELEASE",
+        "L1_PRESS",
+        "L1_RELEASE",
+        "R1_PRESS",
+        "R1_RELEASE",
+        "SHARE_PRESS",
+        "SHARE_RELEASE",
+        "OPTIONS_PRESS",
+        "OPTIONS_RELEASE",
+        "DPAD_UP_PRESS",
+        "DPAD_UP_RELEASE",
+        "DPAD_DOWN_PRESS",
+        "DPAD_DOWN_RELEASE",
+        "DPAD_LEFT_PRESS",
+        "DPAD_LEFT_RELEASE",
+        "DPAD_RIGHT_PRESS",
+        "DPAD_RIGHT_RELEASE",
+        "LEFT_TRIGGER_PRESS",
+        "LEFT_TRIGGER_RELEASE",
+        "RIGHT_TRIGGER_PRESS",
+        "RIGHT_TRIGGER_RELEASE",
+        "LEFT_JOYSTICK_LEFT",
+        "LEFT_JOYSTICK_RIGHT",
+        "LEFT_JOYSTICK_UP",
+        "LEFT_JOYSTICK_DOWN",
+        "LEFT_JOYSTICK_RESET",
+        "RIGHT_JOYSTICK_LEFT",
+        "RIGHT_JOYSTICK_RIGHT",
+        "RIGHT_JOYSTICK_UP",
+        "RIGHT_JOYSTICK_DOWN",
+        "RIGHT_JOYSTICK_RESET",
+        "PS_BUTTON_PRESS",
+        "PS_BUTTON_RELEASE",
+        "TOUCHPAD_PRESS",
+        "TOUCHPAD_RELEASE",
+    ]
+    TestGamepad = vg.VX360Gamepad()
+    # Simulate pressing and releasing all buttons, triggers, and joysticks
+    for act in x_actions:
         parse_gamepad(act, TestGamepad)
-        time.sleep(1)  # Wait for 1 second between actions
+        time.sleep(1)
+    TestGamepad = vg.VDS4Gamepad()
+    # Simulate pressing and releasing all buttons, triggers, and joysticks
+    for act in d_actions:
+        parse_gamepad(act, TestGamepad)
+        time.sleep(1)
