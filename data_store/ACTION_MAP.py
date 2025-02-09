@@ -88,9 +88,42 @@ ACTION_MAP = {
     "DPAD_RIGHT_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT
     ),
-    # Triggers
-    "LEFT_TRIGGER_PRESS": lambda gamepad: gamepad.left_trigger(255),  # Full press
-    "LEFT_TRIGGER_RELEASE": lambda gamepad: gamepad.left_trigger(0),  # Release
-    "RIGHT_TRIGGER_PRESS": lambda gamepad: gamepad.right_trigger(255),  # Full press
-    "RIGHT_TRIGGER_RELEASE": lambda gamepad: gamepad.right_trigger(0),  # Release
+    # Triggers TODO: Implement continuous triggers rather than full press
+    "LEFT_TRIGGER_PRESS": lambda gamepad: gamepad.left_trigger_float(
+        value_float=1.0
+    ),  # Full press
+    "LEFT_TRIGGER_RELEASE": lambda gamepad: gamepad.left_trigger_float(
+        value_float=0.0
+    ),  # Release
+    "RIGHT_TRIGGER_PRESS": lambda gamepad: gamepad.right_trigger_float(
+        value_float=1.0
+    ),  # Full press
+    "RIGHT_TRIGGER_RELEASE": lambda gamepad: gamepad.right_trigger_float(
+        value_float=0.0
+    ),  # Release
+    # Joysticks TODO: Implement continuous joysticks rather than full press
+    "LEFT_JOYSTICK_LEFT": lambda gamepad: gamepad.left_joystick_float(
+        x_value_float=-1.0, y_value_float=0.0
+    ),
+    "LEFT_JOYSTICK_RIGHT": lambda gamepad: gamepad.left_joystick_float(
+        x_value_float=1.0, y_value_float=0.0
+    ),
+    "LEFT_JOYSTICK_UP": lambda gamepad: gamepad.left_joystick_float(
+        x_value_float=0.0, y_value_float=1.0
+    ),
+    "LEFT_JOYSTICK_DOWN": lambda gamepad: gamepad.left_joystick_float(
+        x_value_float=0.0, y_value_float=-1.0
+    ),
+    "RIGHT_JOYSTICK_LEFT": lambda gamepad: gamepad.right_joystick_float(
+        x_value_float=-1.0, y_value_float=0.0
+    ),
+    "RIGHT_JOYSTICK_RIGHT": lambda gamepad: gamepad.right_joystick_float(
+        x_value_float=1.0, y_value_float=0.0
+    ),
+    "RIGHT_JOYSTICK_UP": lambda gamepad: gamepad.right_joystick_float(
+        x_value_float=0.0, y_value_float=1.0
+    ),
+    "RIGHT_JOYSTICK_DOWN": lambda gamepad: gamepad.right_joystick_float(
+        x_value_float=0.0, y_value_float=-1.0
+    ),
 }
