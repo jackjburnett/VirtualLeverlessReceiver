@@ -82,4 +82,4 @@ def start_udp_server(ip, port, logging=False):
 
 # Tests the script if executed standalone, replace the values with the IP and Port you are testing
 if __name__ == "__main__":
-    start_udp_server("192.168.0.17", 8080, True)
+    start_udp_server("192.168.71.30", 8080, True)
