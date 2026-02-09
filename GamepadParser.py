@@ -26,49 +26,33 @@ def parse_gamepad(message, gamepad):
         message (str): The gamepad message to parse.
         gamepad (vg.VX360Gamepad or vg.VDS4Gamepad): The virtual gamepad to update.
     """
-    # Check the type of gamepad and perform actions accordingly
+    # Set the appropriate action map based on gamepad type
     if isinstance(gamepad, vg.VX360Gamepad):
-        # Perform actions specific to VX360Gamepad
-        try:
-            # Retrieve the lambda function based on the message
-            action = AMX.ACTION_MAP.get(message)
-            
-            if action:
-                # Execute the button action function
-                action(gamepad)
-            else:
-                # Try joystick actions if no button action found
-                if not AMJ.handle_joystick_action(message, gamepad):
-                    print(f"Unknown action: {message}")
-
-            # Send the updates to the virtual gamepad
-            gamepad.update()
-
-        except Exception as e:
-            # Handle any potential errors that occur during parsing or gamepad interaction
-            print(f"Error parsing message: {e}")
+        action_map = AMX.ACTION_MAP
     elif isinstance(gamepad, vg.VDS4Gamepad):
-        # Perform actions specific to VDS4Gamepad
-        try:
-            # Retrieve the lambda function based on the message
-            action = AMD.ACTION_MAP.get(message)
-            
-            if action:
-                # Execute the button action function
-                action(gamepad)
-            else:
-                # Try joystick actions if no button action found
-                if not AMJ.handle_joystick_action(message, gamepad):
-                    print(f"Unknown action: {message}")
-
-            # Send the updates to the virtual gamepad
-            gamepad.update()
-
-        except Exception as e:
-            # Handle any potential errors that occur during parsing or gamepad interaction
-            print(f"Error parsing message: {e}")
+        action_map = AMD.ACTION_MAP
     else:
         print(f"Invalid gamepad type. Expected vg.VX360Gamepad or vg.VDS4Gamepad.")
+        return
+    
+    try:
+        # Retrieve the lambda function based on the message
+        action = action_map.get(message)
+        
+        if action:
+            # Execute the button action function
+            action(gamepad)
+        else:
+            # Try joystick actions if no button action found
+            if not AMJ.handle_joystick_action(message, gamepad):
+                print(f"Unknown action: {message}")
+
+        # Send the updates to the virtual gamepad
+        gamepad.update()
+
+    except Exception as e:
+        # Handle any potential errors that occur during parsing or gamepad interaction
+        print(f"Error parsing message: {e}")
 
 
 # Tests the script if executed standalone
