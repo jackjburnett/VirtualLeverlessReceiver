@@ -15,6 +15,7 @@ import vgamepad as vg
 
 import data_store.ACTION_MAP_DS4 as AMD
 import data_store.ACTION_MAP_XBOX as AMX
+import data_store.ACTION_MAP_JOYSTICK as AMJ
 
 
 def parse_gamepad(message, gamepad):
@@ -29,13 +30,16 @@ def parse_gamepad(message, gamepad):
     if isinstance(gamepad, vg.VX360Gamepad):
         # Perform actions specific to VX360Gamepad
         try:
-            # Retrieve the lambda function based on the message or use a default function
-            action = AMX.ACTION_MAP.get(
-                message, lambda g: print(f"Unknown action: {message}")
-            )
-
-            # Execute the action function
-            action(gamepad)
+            # Retrieve the lambda function based on the message
+            action = AMX.ACTION_MAP.get(message)
+            
+            if action:
+                # Execute the button action function
+                action(gamepad)
+            else:
+                # Try joystick actions if no button action found
+                if not AMJ.handle_joystick_action(message, gamepad):
+                    print(f"Unknown action: {message}")
 
             # Send the updates to the virtual gamepad
             gamepad.update()
@@ -46,13 +50,16 @@ def parse_gamepad(message, gamepad):
     elif isinstance(gamepad, vg.VDS4Gamepad):
         # Perform actions specific to VDS4Gamepad
         try:
-            # Retrieve the lambda function based on the message or use a default function
-            action = AMD.ACTION_MAP.get(
-                message, lambda g: print(f"Unknown action: {message}")
-            )
-
-            # Execute the action function
-            action(gamepad)
+            # Retrieve the lambda function based on the message
+            action = AMD.ACTION_MAP.get(message)
+            
+            if action:
+                # Execute the button action function
+                action(gamepad)
+            else:
+                # Try joystick actions if no button action found
+                if not AMJ.handle_joystick_action(message, gamepad):
+                    print(f"Unknown action: {message}")
 
             # Send the updates to the virtual gamepad
             gamepad.update()
@@ -111,6 +118,15 @@ if __name__ == "__main__":
         "RIGHT_JOYSTICK_UP",
         "RIGHT_JOYSTICK_DOWN",
         "RIGHT_JOYSTICK_RESET",
+        # Test joystick continuous values
+        "LEFT_JOYSTICK_-1.0_0.0",
+        "LEFT_JOYSTICK_1.0_0.0",
+        "LEFT_JOYSTICK_0.0_-1.0",
+        "LEFT_JOYSTICK_0.0_1.0",
+        "RIGHT_JOYSTICK_-1.0_0.0",
+        "RIGHT_JOYSTICK_1.0_0.0",
+        "RIGHT_JOYSTICK_0.0_-1.0",
+        "RIGHT_JOYSTICK_0.0_1.0",
     ]
     d_actions = [
         "CROSS_PRESS",
@@ -151,6 +167,15 @@ if __name__ == "__main__":
         "RIGHT_JOYSTICK_UP",
         "RIGHT_JOYSTICK_DOWN",
         "RIGHT_JOYSTICK_RESET",
+        # Test joystick continuous values
+        "LEFT_JOYSTICK_-1.0_0.0",
+        "LEFT_JOYSTICK_1.0_0.0",
+        "LEFT_JOYSTICK_0.0_-1.0",
+        "LEFT_JOYSTICK_0.0_1.0",
+        "RIGHT_JOYSTICK_-1.0_0.0",
+        "RIGHT_JOYSTICK_1.0_0.0",
+        "RIGHT_JOYSTICK_0.0_-1.0",
+        "RIGHT_JOYSTICK_0.0_1.0",
         "PS_BUTTON_PRESS",
         "PS_BUTTON_RELEASE",
         "TOUCHPAD_PRESS",
