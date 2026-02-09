@@ -88,7 +88,7 @@ ACTION_MAP = {
     "DPAD_RIGHT_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT
     ),
-    # Triggers TODO: Implement continuous triggers rather than full press
+    # Simplified Triggers
     "LEFT_TRIGGER_PRESS": lambda gamepad: gamepad.left_trigger_float(
         value_float=1.0
     ),  # Full press

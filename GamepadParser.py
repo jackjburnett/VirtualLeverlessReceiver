@@ -155,12 +155,12 @@ if __name__ == "__main__":
     ]
     trigger_actions = [
         # Test trigger continuous values
-        "LEFT_TRIGGER_0.0",
         "LEFT_TRIGGER_0.5",
         "LEFT_TRIGGER_1.0",
-        "RIGHT_TRIGGER_0.0",
+        "LEFT_TRIGGER_0.0",
         "RIGHT_TRIGGER_0.5",
         "RIGHT_TRIGGER_1.0",
+        "RIGHT_TRIGGER_0.0",
     ]
     def test_gamepad(gamepad, actions):
         """Test a gamepad with a list of actions"""

@@ -89,7 +89,7 @@ ACTION_MAP = {
     "DPAD_RIGHT_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_EAST
     ),
-    # Triggers TODO: Implement continuous triggers rather than full press
+    # Simplified Triggers
     "LEFT_TRIGGER_PRESS": lambda gamepad: gamepad.left_trigger_float(
         value_float=1.0
     ),  # Full press
