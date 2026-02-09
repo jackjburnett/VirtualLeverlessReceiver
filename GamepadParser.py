@@ -16,6 +16,7 @@ import vgamepad as vg
 import data_store.ACTION_MAP_DS4 as AMD
 import data_store.ACTION_MAP_XBOX as AMX
 import data_store.ACTION_MAP_JOYSTICK as AMJ
+import data_store.ACTION_MAP_TRIGGERS as AMT
 
 
 def parse_gamepad(message, gamepad):
@@ -45,7 +46,9 @@ def parse_gamepad(message, gamepad):
         else:
             # Try joystick actions if no button action found
             if not AMJ.handle_joystick_action(message, gamepad):
-                print(f"Unknown action: {message}")
+                # Try trigger actions if no joystick action found
+                if not AMT.handle_trigger_action(message, gamepad):
+                    print(f"Unknown action: {message}")
 
         # Send the updates to the virtual gamepad
         gamepad.update()
@@ -149,6 +152,15 @@ if __name__ == "__main__":
         "RIGHT_JOYSTICK_0.0_-1.0",
         "RIGHT_JOYSTICK_0.0_1.0",
         "RIGHT_JOYSTICK_0.0_0.0",
+    ]
+    trigger_actions = [
+        # Test trigger continuous values
+        "LEFT_TRIGGER_0.0",
+        "LEFT_TRIGGER_0.5",
+        "LEFT_TRIGGER_1.0",
+        "RIGHT_TRIGGER_0.0",
+        "RIGHT_TRIGGER_0.5",
+        "RIGHT_TRIGGER_1.0",
     ]
     TestGamepad = vg.VX360Gamepad()
     # Simulate pressing and releasing all buttons, triggers, and joysticks
