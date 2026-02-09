@@ -101,7 +101,7 @@ ACTION_MAP = {
     "RIGHT_TRIGGER_RELEASE": lambda gamepad: gamepad.right_trigger_float(
         value_float=0.0
     ),  # Release
-    # Joysticks TODO: Implement continuous joysticks rather than full press
+    # Simplified Joysticks
     "LEFT_JOYSTICK_LEFT": lambda gamepad: gamepad.left_joystick_float(
         x_value_float=-1.0, y_value_float=0.0
     ),
