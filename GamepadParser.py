@@ -92,25 +92,6 @@ if __name__ == "__main__":
         "LEFT_TRIGGER_RELEASE",
         "RIGHT_TRIGGER_PRESS",
         "RIGHT_TRIGGER_RELEASE",
-        "LEFT_JOYSTICK_LEFT",
-        "LEFT_JOYSTICK_RIGHT",
-        "LEFT_JOYSTICK_UP",
-        "LEFT_JOYSTICK_DOWN",
-        "LEFT_JOYSTICK_RESET",
-        "RIGHT_JOYSTICK_LEFT",
-        "RIGHT_JOYSTICK_RIGHT",
-        "RIGHT_JOYSTICK_UP",
-        "RIGHT_JOYSTICK_DOWN",
-        "RIGHT_JOYSTICK_RESET",
-        # Test joystick continuous values
-        "LEFT_JOYSTICK_-1.0_0.0",
-        "LEFT_JOYSTICK_1.0_0.0",
-        "LEFT_JOYSTICK_0.0_-1.0",
-        "LEFT_JOYSTICK_0.0_1.0",
-        "RIGHT_JOYSTICK_-1.0_0.0",
-        "RIGHT_JOYSTICK_1.0_0.0",
-        "RIGHT_JOYSTICK_0.0_-1.0",
-        "RIGHT_JOYSTICK_0.0_1.0",
     ]
     d_actions = [
         "CROSS_PRESS",
@@ -141,6 +122,12 @@ if __name__ == "__main__":
         "LEFT_TRIGGER_RELEASE",
         "RIGHT_TRIGGER_PRESS",
         "RIGHT_TRIGGER_RELEASE",
+        "PS_BUTTON_PRESS",
+        "PS_BUTTON_RELEASE",
+        "TOUCHPAD_PRESS",
+        "TOUCHPAD_RELEASE",
+    ]
+    joystick_actions = [
         "LEFT_JOYSTICK_LEFT",
         "LEFT_JOYSTICK_RIGHT",
         "LEFT_JOYSTICK_UP",
@@ -156,22 +143,26 @@ if __name__ == "__main__":
         "LEFT_JOYSTICK_1.0_0.0",
         "LEFT_JOYSTICK_0.0_-1.0",
         "LEFT_JOYSTICK_0.0_1.0",
+        "LEFT_JOYSTICK_0.0_0.0",
         "RIGHT_JOYSTICK_-1.0_0.0",
         "RIGHT_JOYSTICK_1.0_0.0",
         "RIGHT_JOYSTICK_0.0_-1.0",
         "RIGHT_JOYSTICK_0.0_1.0",
-        "PS_BUTTON_PRESS",
-        "PS_BUTTON_RELEASE",
-        "TOUCHPAD_PRESS",
-        "TOUCHPAD_RELEASE",
+        "RIGHT_JOYSTICK_0.0_0.0",
     ]
     TestGamepad = vg.VX360Gamepad()
     # Simulate pressing and releasing all buttons, triggers, and joysticks
     for act in x_actions:
         parse_gamepad(act, TestGamepad)
         time.sleep(1)
+    for act in joystick_actions:
+        parse_gamepad(act, TestGamepad)
+        time.sleep(1)
     TestGamepad = vg.VDS4Gamepad()
     # Simulate pressing and releasing all buttons, triggers, and joysticks
     for act in d_actions:
+        parse_gamepad(act, TestGamepad)
+        time.sleep(1)
+    for act in joystick_actions:
         parse_gamepad(act, TestGamepad)
         time.sleep(1)
