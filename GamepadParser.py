@@ -162,19 +162,20 @@ if __name__ == "__main__":
         "RIGHT_TRIGGER_0.5",
         "RIGHT_TRIGGER_1.0",
     ]
+    def test_gamepad(gamepad, actions):
+        """Test a gamepad with a list of actions"""
+        for act in actions:
+            parse_gamepad(act, gamepad)
+            time.sleep(1)
+
+    # Test XBOX controller
     TestGamepad = vg.VX360Gamepad()
-    # Simulate pressing and releasing all buttons, triggers, and joysticks
-    for act in x_actions:
-        parse_gamepad(act, TestGamepad)
-        time.sleep(1)
-    for act in joystick_actions:
-        parse_gamepad(act, TestGamepad)
-        time.sleep(1)
+    test_gamepad(TestGamepad, x_actions)
+    test_gamepad(TestGamepad, joystick_actions)
+    test_gamepad(TestGamepad, trigger_actions)
+
+    # Test DS4 controller
     TestGamepad = vg.VDS4Gamepad()
-    # Simulate pressing and releasing all buttons, triggers, and joysticks
-    for act in d_actions:
-        parse_gamepad(act, TestGamepad)
-        time.sleep(1)
-    for act in joystick_actions:
-        parse_gamepad(act, TestGamepad)
-        time.sleep(1)
+    test_gamepad(TestGamepad, d_actions)
+    test_gamepad(TestGamepad, joystick_actions)
+    test_gamepad(TestGamepad, trigger_actions)
