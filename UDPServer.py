@@ -1,85 +1,65 @@
+import asyncio
 import datetime
-import socket
-import threading
+
+import websockets
 
 import GamepadManager
 import GamepadParser
 
-# Used to lock dictionary to ensure thread safety, currently not used.
-gamepad_dict_lock = threading.Lock()
+gamepad_dict_lock = asyncio.Lock()
 
 
-def handle_message(data, address, log_file=None):
-    """
-    This function runs in a separate thread to handle each incoming message.
+async def handle_client(websocket, log_file=None):
+    """Handle each WebSocket client connection (websockets v15 style)."""
 
-    Parameters:
-    data (bytes): The incoming message data
-    address (tuple): The client's IP address and port
-    log_file (str): The log file to write to (optional)
-    """
-
-    # Get the user's IP address from the address tuple
-    ip_address = address[0]
-
-    # Decode the message data from bytes to a string and strip whitespace
-    message = data.decode("utf-8").strip()
-
-    # Get or create the gamepad object for the user's IP address
+    ip_address = websocket.remote_address[0]
     gamepad = GamepadManager.get_or_create_gamepad(ip_address)
 
-    # Print the received message to the console
-    print(f"Received message from {ip_address}: {message}")
+    print(f"Client connected: {ip_address}")
 
-    # If logging is enabled, write the message to the log file
-    if log_file is not None:
-        file = open(log_file, "a")
-        time = (
-            datetime.datetime.now().strftime("%H:%M:%S")
-            + f".{datetime.datetime.now().microsecond // 1000:03d}"
-        )
-        file.write(f"{time}: Received message from {ip_address}: {message}")
-        file.close()
-    # Parse the message and update the corresponding gamepad
-    GamepadParser.parse_gamepad(message, gamepad)
-
-
-# Function that starts the server and awaits messages
-def start_udp_server(ip, port, logging=False):
-    sock = None  # Initialize sock to None
     try:
-        # Create a UDP socket
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        async for message in websocket:
+            message = message.strip()
+            print(f"Received message from {ip_address}: {message}")
 
-        # Bind the socket to the IP address and port
-        server_address = (ip, port)
-        print(f"Starting VirtualLeverless Receiver on {ip}:{port}")
-        if logging:
-            now = datetime.datetime.now()
-            date = now.strftime("%Y%m%d-%H%M%S")
-            time = now.strftime("%H:%M:%S") + f".{now.microsecond // 1000:03d}"
-            log_file = f"logs/{date}.txt"
-            file = open(log_file, "a")
-            file.write(f"{time}: Starting VirtualLeverless Receiver on {ip}:{port}\n")
-            file.close()
-        else:
-            log_file = None
-        sock.bind(server_address)
-        print("Waiting for a message...")
-        while True:
-            # Receive data
-            data, address = sock.recvfrom(4096)
+            if log_file:
+                now = datetime.datetime.now()
+                timestamp = now.strftime("%H:%M:%S") + f".{now.microsecond // 1000:03d}"
+                with open(log_file, "a") as f:
+                    f.write(
+                        f"{timestamp}: Received message from {ip_address}: {message}\n"
+                    )
 
-            # Start a new thread to handle the message
-            threading.Thread(
-                target=handle_message, args=(data, address, log_file)
-            ).start()
-    except Exception as e:
-        print(f"Error: {e}")
-    finally:
-        sock.close()
+            GamepadParser.parse_gamepad(message, gamepad)
+
+    except websockets.exceptions.ConnectionClosed as e:
+        print(f"Client disconnected: {ip_address} ({e})")
 
 
-# Tests the script if executed standalone, replace the values with the IP and Port you are testing
+def start_udp_server(ip, port, logging=False):
+    """
+    Drop-in replacement for old UDP server.
+    Works with websockets v15.
+    """
+
+    log_file = None
+    if logging:
+        now = datetime.datetime.now()
+        date = now.strftime("%Y%m%d-%H%M%S")
+        log_file = f"logs/{date}.txt"
+
+    print(f"Starting VirtualLeverless WebSocket server on {ip}:{port}")
+
+    async def server_loop():
+        async def handler(ws):
+            await handle_client(ws, log_file)
+
+        async with websockets.serve(handler, ip, port):
+            await asyncio.Future()  # run forever
+
+    asyncio.run(server_loop())
+
+
+# Keep main block for standalone testing
 if __name__ == "__main__":
-    start_udp_server("192.168.71.30", 8080, True)
+    start_udp_server("0.0.0.0", 8765, logging=True)
