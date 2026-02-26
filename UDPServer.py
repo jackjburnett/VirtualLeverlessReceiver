@@ -34,6 +34,7 @@ async def handle_client(websocket, log_file=None):
 
     except websockets.exceptions.ConnectionClosed as e:
         print(f"Client disconnected: {client_id} ({e})")
+        GamepadManager.delete_gamepad(client_id)
 
 
 def start_udp_server(ip, port, logging=False):
