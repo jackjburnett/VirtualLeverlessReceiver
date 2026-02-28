@@ -3,6 +3,9 @@ layout: default
 title: Patch Notes
 ---
 
+# Download Most Recent Release
+[Version 2.0](https://github.com/jackjburnett/VirtualLeverlessReceiver/releases)
+
 # Patch Notes
 
 Here are the latest patch notes:
