@@ -2,56 +2,91 @@
 
 ## Overview
 
-VirtualLeverless Receiver is a simple Python-based UDP server that enables [VirtualLeverless](https://github.com/jackjburnett/VirtualLeverless) to communicate with a Windows PC.
-VirtualLeverless Receiver creates a virtual controller for each IP address that connects to it, using the [VigEm Client](https://github.com/nefarius/ViGEmClient) to simulate the pressing and releasing of buttons and triggers of an Xbox 360 Controller.
+VirtualLeverless Receiver is a WebSocket-based server for Windows that enables [VirtualLeverless](https://github.com/jackjburnett/VirtualLeverless) to communicate with a PC. It creates a virtual controller for each connected client using [vgamepad](https://pypi.org/project/vgamepad/) and the [ViGEmBus driver](https://vigem.org/projects/ViGEmBus/) to simulate pressing and releasing buttons and triggers of an Xbox or PlayStation controller.
 
-## Installation
+---
 
-To run the VirtualLeverless Receiver, you need [Python 3.9+](https://www.python.org/downloads/) installed on your system.
+## Requirements
 
-### Dependencies
+- Windows 10 or later  
+- **ViGEmBus driver** installed (required for virtual controllers)  
+  [Download ViGEmBus](https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0)  
 
-Install the dependencies using `pip`:
+No Python installation is required, the server is provided as a standalone `.exe`.
 
-```bash
-pip install -r requirements.txt
-```
+---
+## Quick Start
+1. [Install ViGEmBus](https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0) 
+ (required for virtual controllers). 
+Run the installer and follow the prompts.
+2. **Download `VirtualLeverlessReceiver.exe`** from the [most recent release (v2.0)](https://github.com/jackjburnett/VirtualLeverlessReceiver/releases/tag/v2.0).  
+3. Optional: Set up a Cloudflare Tunnel (needed if you want VirtualLeverless to connect from outside your local network):
+   - Download and install cloudflared from "https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/".
+   - Run a tunnel to forward WebSocket traffic to the server IP/port: ```cloudflared tunnel --url ws://127.0.0.1:8080```
+4. Run the server:
+   - Double-click the .exe
+   - or run from a terminal: ```
+         "cd path\to\exe"
+         "VirtualLeverlessReceiver.exe"```
+5. Connect VirtualLeverless to the exposed IP/port (or the Cloudflare Tunnel URL if using remote access).
 
-## Usage
+---
 
-To start VirtualLeverless Receiver, use the following command:
+## Simple Installation & Usage
 
-```bash
-python VirtualLeverlessReceiver.py --ip <IP_ADDRESS> --port <PORT>
-```
-
-### Arguments
-
-- **--ip**: The IP address to bind the server to. Default is 127.0.0.1.
-- **--port**: The port number to bind the server to. Default is 8080.
-
-### Connecting
-
-To connect to the VirtualLeverless Receiver, send UDP requests to the specified IP address and port using the available commands.
-The receiver will process the requests and simulate the corresponding actions on the virtual controller.
-
-### Available Commands
-
-A list of available commands can be found in [data_store/ACTION_MAP_XBOX.py](./data_store/ACTION_MAP_XBOX.py).
-These commands can be used to simulate various actions on the virtual controller.
-
-### Example
-
-To start the server on IP 192.168.1.10 and port 8080, use:
+1. **Install ViGEmBus** if not already installed.  
+2. **Download `VirtualLeverlessReceiver.exe`** from the [most recent release (v2.0)](https://github.com/jackjburnett/VirtualLeverlessReceiver/releases/tag/v2.0).  
+3. Run the `.exe` by double-clicking it or via a terminal:
 
 ```bash
-python script_name.py --ip 192.168.1.10 --port 8080
+cd path\to\exe
+VirtualLeverlessReceiver.exe
 ```
+
+> ⚠️ **Remote Access:** To allow VirtualLeverless to connect from outside your local network, you must use a tunneling service such as [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/). Set up the tunnel to forward WebSocket traffic to the IP/port the server is listening on.
+
+---
+
+### Logs
+
+All received messages are logged with timestamps and client IDs.
+
+Logs are stored in a "logs" folder next to the .exe.
+
+
+## Advanced Installation (Python)
+
+If you want to run the server from source:
+1. Clone the repository:
+```bash
+git clone https://github.com/jackjburnett/VirtualLeverlessReceiver.git
+"cd VirtualLeverlessReceiver"
+```
+2. Create and activate a Python virtual environment:
+```
+python -m venv venv"
+"venv\Scripts\activate"
+```
+3. Install dependencies:
+```
+pip install -r requirements.txt"
+```
+4. Start the server with a custom IP/port (Default: "--ip 127.0.0.1 --port 8080"):
+```
+5. "python VirtualLeverlessReceiver.py --ip <IP_ADDRESS> --port <PORT>"
+```
+
+For remote connections, you need a tunneling service like Cloudflare Tunnel to forward WebSocket traffic.
+
+## Notes
+The .exe bundles Python and all dependencies — users do not need Python installed.
+
+Users must have ViGEmBus installed for virtual controllers to work.
+
+The project currently targets Windows x64. For x86, a separate build is required.
 
 ## License
-
 This project is licensed under the GNU General Public License (GPL). See the [LICENSE](LICENSE) file for details.
 
 ## Contact
-
-For any issues or questions, please contact [jackjburnett](https://github.com/jackjburnett).
+For any issues or questions, contact [jackjburnett](https://github.com/jackjburnett).
