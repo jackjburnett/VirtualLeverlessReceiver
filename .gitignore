@@ -1,7 +1,6 @@
 # PyInstaller
 dist/
 build/
-*.spec
 
 # Log folder
 logs/*
