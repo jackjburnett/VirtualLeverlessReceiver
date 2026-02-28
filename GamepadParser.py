@@ -1,12 +1,24 @@
 """
-GamepadParser.py
+Gamepad Parser Module
 
-This script handles gamepad input and updates a virtual gamepad accordingly.
-It uses the vgamepad library to interact with the virtual gamepad.
+This module handles parsing of gamepad input messages and updating virtual gamepad
+instances accordingly. It maps string-based action commands to virtual gamepad
+inputs using configurable action maps for different controller types.
 
 Dependencies:
-    - vgamepad
-    - data_store.ACTION_MAP_DS4
+    time: Standard Python library for time-related functions (used in testing)
+    vgamepad: A Python library for creating virtual gamepads that simulate
+              Xbox 360 and PS4 controller input on Windows systems
+    data_store.ACTION_MAP_DS4: Action mapping for PS4 (DS4) controller buttons
+    data_store.ACTION_MAP_XBOX: Action mapping for Xbox 360 controller buttons  
+    data_store.ACTION_MAP_JOYSTICK: Action mapping for joystick movements
+    data_store.ACTION_MAP_TRIGGERS: Action mapping for trigger inputs
+
+Functions:
+    parse_gamepad(message, gamepad): Parse gamepad message and update virtual gamepad
+
+The module supports both Xbox 360 and PS4 (DS4) virtual controllers with
+comprehensive button, joystick, and trigger input handling.
 """
 
 import time
@@ -14,9 +26,9 @@ import time
 import vgamepad as vg
 
 import data_store.ACTION_MAP_DS4 as AMD
-import data_store.ACTION_MAP_XBOX as AMX
 import data_store.ACTION_MAP_JOYSTICK as AMJ
 import data_store.ACTION_MAP_TRIGGERS as AMT
+import data_store.ACTION_MAP_XBOX as AMX
 
 
 def parse_gamepad(message, gamepad):
@@ -35,11 +47,10 @@ def parse_gamepad(message, gamepad):
     else:
         print(f"Invalid gamepad type. Expected vg.VX360Gamepad or vg.VDS4Gamepad.")
         return
-    
     try:
         # Retrieve the lambda function based on the message
         action = action_map.get(message)
-        
+
         if action:
             # Execute the button action function
             action(gamepad)
@@ -162,6 +173,7 @@ if __name__ == "__main__":
         "RIGHT_TRIGGER_1.0",
         "RIGHT_TRIGGER_0.0",
     ]
+
     def test_gamepad(gamepad, actions):
         """Test a gamepad with a list of actions"""
         for act in actions:

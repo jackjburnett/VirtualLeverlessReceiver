@@ -1,3 +1,28 @@
+"""
+PS4 (DS4) Action Map Module
+
+This module defines the action mapping for PS4 DualShock 4 (DS4) virtual gamepad
+controllers. It maps string-based action commands to lambda functions that
+interact with the virtual DS4 gamepad using the vgamepad library.
+
+Dependencies:
+    vgamepad: A Python library for creating virtual gamepads that simulate
+              PS4 (DS4) controller input on Windows systems
+
+Constants:
+    ACTION_MAP: Dictionary mapping action strings to lambda functions for DS4 inputs
+               - Buttons: CROSS, CIRCLE, TRIANGLE, SQUARE, L1, R1, SHARE, OPTIONS
+               - D-Pad: DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT
+               - Triggers: LEFT_TRIGGER, RIGHT_TRIGGER (float values 0.0-1.0)
+               - Joysticks: LEFT_JOYSTICK, RIGHT_JOYSTICK (x,y coordinates -1.0 to 1.0)
+               - Special: PS_BUTTON, TOUCHPAD, LEFT_THUMB, RIGHT_THUMB
+
+The action mapping supports both press and release events for buttons, and
+simplified binary updates for triggers and joysticks. Each action string
+corresponds to a specific gamepad input that can be executed via the lambda
+functions stored in the ACTION_MAP dictionary.
+"""
+
 import vgamepad as vg
 
 # Dictionary mapping messages to lambda functions

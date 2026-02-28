@@ -1,7 +1,36 @@
+"""
+VirtualLeverless Receiver Main Application
+
+This module serves as the main entry point for the VirtualLeverless Receiver application.
+It provides command-line argument parsing, IP and port validation, and initializes the
+WebSocket server for virtual gamepad connections.
+
+Dependencies:
+    argparse: Python's standard library for parsing command-line arguments
+    asyncio: Python's asynchronous I/O library for running the WebSocket server
+    ipaddress: Standard library for IP address validation and manipulation
+    WebSocketServer: Custom module containing the WebSocket server implementation
+
+Functions:
+    validate_ip(ip): Validate IP address format using ipaddress module
+    validate_port(port): Validate port number range and format
+    main(): Main function that parses arguments and starts the server
+
+The application supports:
+- Custom IP address and port configuration
+- Optional message logging functionality
+- Input validation with helpful error messages
+- Graceful error handling for invalid configurations
+
+Usage:
+    python VirtualLeverlessReceiver.py --ip 127.0.0.1 --port 8080 --logging
+"""
+
 import argparse
+import asyncio
 import ipaddress
 
-import UDPServer
+from WebSocketServer import start_websocket_server
 
 
 # Validates IP Address using the ipaddress module
@@ -76,4 +105,4 @@ if __name__ == "__main__":
     validate_port(args.port)
 
     # Start the UDP server with provided IP and Port
-    UDPServer.start_udp_server(args.ip, args.port, args.logging)
+    asyncio.run(start_websocket_server(args.ip, args.port, args.logging))
