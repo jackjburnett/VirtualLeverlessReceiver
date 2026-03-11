@@ -23,7 +23,7 @@ No Python installation is required, the server is provided as a standalone `.exe
 3. Set up a Cloudflare Tunnel (needed if using the official VirtualLeverless):  
    - Download and install cloudflared from [https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/)  
    - Run a tunnel to forward WebSocket traffic to the server IP/port:  
-     `"cloudflared tunnel --url ws://127.0.0.1:8080"`  
+     `"cloudflared tunnel --url 127.0.0.1:8080"`  
 4. Run the server:  
    - Double-click the `.exe`  
    - Or run from a terminal:  
