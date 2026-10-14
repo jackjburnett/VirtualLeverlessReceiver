@@ -23,7 +23,7 @@ The application supports:
 - Graceful error handling for invalid configurations
 
 Usage:
-    python VirtualLeverlessReceiver.py --ip 127.0.0.1 --port 8080 --logging
+    python WiFI.py --ip 127.0.0.1 --port 8080 --logging
 """
 
 import argparse
