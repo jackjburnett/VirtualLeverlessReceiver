@@ -1,6 +1,5 @@
 ## Joystick Action Map Module
 # Breaks a message down to attempt parsing it as a joystick command (LEFT/RIGHT_JOYSTICK_X_Y)
-
 # Updates the relevant gamepad joystick or raises an exception
 
 # Function call for handling joysticks, takes message and gamepad object
@@ -13,15 +12,15 @@ def handle_joystick_action(message, gamepad):
         try:
             # Allocates split into variables
             joystick = parts[0]
-            x_val = float(parts[2])
-            y_val = float(parts[3])
+            x_val = fix_joystick_range(float(parts[2]))
+            y_val = fix_joystick_range(float(parts[3]))
 
             # Updates the relevant joystick
             if joystick == "LEFT":
-                gamepad.left_joystick_float(fix_joystick_range(x_val), fix_joystick_range(y_val))
+                gamepad.left_joystick_float(x_val, y_val)
                 return True
             elif joystick == "RIGHT":
-                gamepad.right_joystick_float(fix_joystick_range(x_val), fix_joystick_range(y_val))
+                gamepad.right_joystick_float(x_val, y_val)
                 return True
         # Any gamepad issues raise a joystick value error
         except (ValueError, IndexError):

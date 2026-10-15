@@ -1,46 +1,46 @@
-"""
-Trigger Action Handler Module
-
-This module provides functionality for handling continuous trigger input actions
-for virtual gamepad controllers. It parses trigger action messages and updates
-the corresponding trigger positions with precise float values.
-
-Dependencies:
-    None (no external imports)
-
-Functions:
-    handle_trigger_action(message, gamepad): Parse trigger action messages and
-                                             update virtual gamepad trigger positions
-
-The module handles trigger actions in the format "LEFT_TRIGGER_x" or 
-"RIGHT_TRIGGER_x" where x is a float value between 0.0 and 1.0.
-This allows for precise analog trigger control beyond simple press/release inputs.
-
-Supported triggers:
-    - LEFT_TRIGGER: Updates left trigger position
-    - RIGHT_TRIGGER: Updates right trigger position
-
-Value range:
-    - 0.0: Fully released
-    - 1.0: Fully pressed
-    - Values between 0.0 and 1.0: Partial trigger depression
-"""
-
+## Trigger Action Map Module
+# Breaks a message down to attempt parsing it as a trigger command (LEFT/RIGHT_JOYSTICK_X_Y)
+# Checks if an alias was used and resolves this (LT/RT/L2/R2)
+# Updates the relevant gamepad trigger or raises an exception
 
 def handle_trigger_action(message, gamepad):
-    parts = message.split("_")
+    # Split the message on the last underscore
+    parts = message.rsplit("_", 1)
 
-    # Check if it's a trigger action (LEFT/RIGHT_TRIGGER_x)
-    if len(parts) >= 3 and parts[1] == "TRIGGER":
+    # Set the aliases and the trigger they represent
+    aliases = {
+        "LT": "LEFT",
+        "L2": "LEFT",
+        "LEFT_TRIGGER": "LEFT",
+        "RT": "RIGHT",
+        "R2": "RIGHT",
+        "RIGHT_TRIGGER": "RIGHT",
+    }
+
+    # Check if the message has two parts
+    if len(parts) == 2:
         try:
-            trigger = parts[0]
-            value = float(parts[2])
+            # Set the trigger to the relevant alias and get the trigger value
+            trigger = aliases.get(parts[0])
+            value = fix_trigger_range(float(parts[1]))
 
+            # Updates the relevant trigger
             if trigger == "LEFT":
                 gamepad.left_trigger_float(value_float=value)
+                return True
             elif trigger == "RIGHT":
                 gamepad.right_trigger_float(value_float=value)
-            return True
+                return True
+        # Any gamepad issues raise a trigger value error
         except (ValueError, IndexError):
             print("Trigger Value Error")
     return False
+
+# Clamps X and Y values between 1.0 to -1.0 rather than raising an exception
+def fix_trigger_range(value):
+    if value < 0.0:
+        return 0.0
+    elif value > 1.0:
+        return 1.0
+    else:
+        return value
