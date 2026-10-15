@@ -1,46 +1,38 @@
-"""
-Joystick Action Handler Module
+## Joystick Action Map Module
+# Breaks a message down to attempt parsing it as a joystick command (LEFT/RIGHT_JOYSTICK_X_Y)
 
-This module provides functionality for handling continuous joystick input actions
-for virtual gamepad controllers. It parses joystick action messages and updates
-the corresponding joystick positions with precise float values.
+# Updates the relevant gamepad joystick or raises an exception
 
-Dependencies:
-    None (no external imports)
-
-Functions:
-    handle_joystick_action(message, gamepad): Parse joystick action messages and
-                                              update virtual gamepad joystick positions
-
-The module handles joystick actions in the format "LEFT_JOYSTICK_x_y" or 
-"RIGHT_JOYSTICK_x_y" where x and y are float values between -1.0 and 1.0.
-This allows for precise analog joystick control beyond simple directional inputs.
-
-Supported joysticks:
-    - LEFT_JOYSTICK: Updates left analog stick position
-    - RIGHT_JOYSTICK: Updates right analog stick position
-
-Coordinate system:
-    - X-axis: -1.0 (left) to 1.0 (right)
-    - Y-axis: -1.0 (down) to 1.0 (up)
-"""
-
-
+# Function call for handling joysticks, takes message and gamepad object
 def handle_joystick_action(message, gamepad):
+    # Split message by underscores
     parts = message.split("_")
 
     # Check if it's a joystick action (LEFT/RIGHT_JOYSTICK_x_y)
-    if len(parts) >= 4 and parts[1] == "JOYSTICK":
+    if len(parts) == 4 and parts[1] == "JOYSTICK":
         try:
+            # Allocates split into variables
             joystick = parts[0]
             x_val = float(parts[2])
             y_val = float(parts[3])
 
+            # Updates the relevant joystick
             if joystick == "LEFT":
-                gamepad.left_joystick_float(x_val, y_val)
+                gamepad.left_joystick_float(fix_joystick_range(x_val), fix_joystick_range(y_val))
+                return True
             elif joystick == "RIGHT":
-                gamepad.right_joystick_float(x_val, y_val)
-            return True
+                gamepad.right_joystick_float(fix_joystick_range(x_val), fix_joystick_range(y_val))
+                return True
+        # Any gamepad issues raise a joystick value error
         except (ValueError, IndexError):
             print("Joystick Value Error")
     return False
+
+# Clamps X and Y values between 1.0 to -1.0 rather than raising an exception
+def fix_joystick_range(value):
+    if value < -1.0:
+        return -1.0
+    elif value > 1.0:
+        return 1.0
+    else:
+        return value

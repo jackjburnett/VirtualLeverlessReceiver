@@ -1,18 +1,18 @@
 """Combined worker checks with real Wi-Fi sockets and a simulated BLE adapter."""
 
 import asyncio
-from dataclasses import replace
 import socket
 import threading
 import time
 import unittest
+from dataclasses import replace
 from unittest.mock import Mock
 
 from websockets.sync.client import connect
 
 from AppSettings import ReceiverSettings
 from ControllerRouter import ControllerRouter
-from VirtualLeverless import VirtualLeverless
+from VSLink import VirtualLeverless
 from test_ble import Manager
 
 

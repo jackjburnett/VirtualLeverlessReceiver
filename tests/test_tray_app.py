@@ -1,11 +1,11 @@
 """Regression checks for the status popup's real Windows close controls."""
 
 import ctypes
-from pathlib import Path
 import sys
 import threading
-from types import SimpleNamespace
 import unittest
+from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import Mock
 
 
@@ -15,7 +15,7 @@ class StatusWindowTests(unittest.TestCase):
         import tkinter as tk
         from AppSettings import ReceiverSettings
         from TrayApp import TrayApplication
-        from VirtualLeverless import ReceiverStatus
+        from VSLink import ReceiverStatus
         self.root = tk.Tk()
         self.root.withdraw()
         self.manager = SimpleNamespace(status=ReceiverStatus(), settings=ReceiverSettings(),
@@ -51,7 +51,7 @@ class StatusWindowTests(unittest.TestCase):
         self.assertIsNot(reopened, window)
 
     def test_native_close_button_closes_window_and_status_remains_live(self):
-        from VirtualLeverless import ReceiverStatus, TransportStatus
+        from VSLink import ReceiverStatus, TransportStatus
         window = self.open_from_tray_thread()
         self.manager.status = ReceiverStatus(wifi=TransportStatus("Listening", 1), wifi_port=9000)
         self.app._process_ui_requests(self.root)

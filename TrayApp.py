@@ -2,21 +2,21 @@
 
 import argparse
 import ctypes
-from dataclasses import replace
 import io
 import logging
-from logging.handlers import RotatingFileHandler
 import os
-from pathlib import Path
 import subprocess
 import sys
 import threading
+from dataclasses import replace
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 import pystray
 from PIL import Image, ImageDraw
 
 from AppSettings import SettingsStore
-from VirtualLeverless import VirtualLeverless
+from VSLink import VirtualLeverless
 
 APP_NAME = "VirtualLeverless Receiver"
 logger = logging.getLogger(__name__)

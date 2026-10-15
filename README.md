@@ -2,7 +2,7 @@
 
 A Windows system tray receiver for the VirtualLeverless mobile controller.
 The tray runs **Wi-Fi (WebSocket) and Bluetooth LE simultaneously** through
-`VirtualLeverless.py`, with one shared Gamepad Manager and Gamepad Parser. The
+`VSLink.py`, with one shared Gamepad Manager and Gamepad Parser. The
 controller packet format and mappings are unchanged.
 
 ## Run the tray application
@@ -35,7 +35,7 @@ restarts the enabled transports. Exit closes sockets, stops advertising,
 releases inputs, and waits for the worker to finish. A second tray copy exits
 without creating another receiver.
 
-Stop standalone `BLE.py`, `WiFI.py`, or `VirtualLeverless.py` instances before using
+Stop standalone `BLE.py`, `WiFI.py`, or `VSLink.py` instances before using
 the tray application. Keep the
 executable in a permanent location before enabling Start with Windows, because
 the setting records its path. Bluetooth failures appear in the tray status and
@@ -106,7 +106,7 @@ no machine-specific DLL paths and includes both transports and the settings UI.
 
 - `Receiver.pyw` starts the console-free tray application.
 - `TrayApp.py` owns the tray icon, menus, startup setting, and rotating logs.
-- `VirtualLeverless.py` coordinates both transports on one asyncio worker, so all
+- `VSLink.py` coordinates both transports on one asyncio worker, so all
   controller creation, parsing, and cleanup happen on the same thread.
 - `ControllerRouter.py` shares controller ownership, type switching and the total
   controller limit. IDs use `wifi:` and `ble:` prefixes to avoid collisions.
@@ -125,7 +125,7 @@ portable install or isolated test.
 
 The legacy `WiFI.py` entry point remains available for Wi-Fi-only terminal use;
 its default bind address/port are now `0.0.0.0:8000`. For shared settings and
-controller ownership, use `VirtualLeverless.py` or the tray instead of launching
+controller ownership, use `VSLink.py` or the tray instead of launching
 separate transport processes.
 
 ## Standalone BLE testing
