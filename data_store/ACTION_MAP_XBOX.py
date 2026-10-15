@@ -1,33 +1,18 @@
-"""
-Xbox 360 Action Map Module
+## Xbox 360 Action Map Module
+# Maps plain text commands to vgamepad controller commands, using lambda functions.
+# For each of the following inputs, press and release are supported:
+# - Buttons: A, B, X, Y, LEFT_BUMBER/LB, RIGHT_BUMPER/RB, BACK, START
+# - D-Pad: DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT
+# - Triggers (Simplified to full/no hold): LEFT_TRIGGER/LT, RIGHT_TRIGGER/RT
+# - Joysticks (Simplified to full/no hold): LEFT_JOYSTICK, RIGHT_JOYSTICK
+# - Special: HOME/XBOX, LEFT_THUMB/LS, RIGHT_THUMB/RS
 
-This module defines the action mapping for Xbox 360 virtual gamepad controllers.
-It maps string-based action commands to lambda functions that interact with the
-virtual Xbox 360 gamepad using the vgamepad library.
-
-Dependencies:
-    vgamepad: A Python library for creating virtual gamepads that simulate
-              Xbox 360 controller input on Windows systems
-
-Constants:
-    ACTION_MAP: Dictionary mapping action strings to lambda functions for Xbox inputs
-               - Buttons: A, B, X, Y, LEFT_SHOULDER, RIGHT_SHOULDER, BACK, START
-               - D-Pad: DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT
-               - Triggers: LEFT_TRIGGER, RIGHT_TRIGGER (float values 0.0-1.0)
-               - Joysticks: LEFT_JOYSTICK, RIGHT_JOYSTICK (x,y coordinates -1.0 to 1.0)
-               - Thumb sticks: LEFT_THUMB, RIGHT_THUMB
-
-The action mapping supports both press and release events for buttons, and
-simplified binary updates for triggers and joysticks. Each action string
-corresponds to a specific gamepad input that can be executed via the lambda
-functions stored in the ACTION_MAP dictionary.
-"""
-
+# vgamepad (library for VigEmBus interfacing) import for gamepad object
 import vgamepad as vg
 
-# Dictionary mapping messages to lambda functions
+# Dictionary mapping messages to gamepad lambda functions
 ACTION_MAP = {
-    # Buttons
+    # Face Buttons and Bumpers
     "A_PRESS": lambda gamepad: gamepad.press_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A
     ),
@@ -52,16 +37,28 @@ ACTION_MAP = {
     "Y_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y
     ),
-    "LEFT_SHOULDER_PRESS": lambda gamepad: gamepad.press_button(
+    "LEFT_BUMPER_PRESS": lambda gamepad: gamepad.press_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER
     ),
-    "LEFT_SHOULDER_RELEASE": lambda gamepad: gamepad.release_button(
+    "LEFT_BUMPER_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER
     ),
-    "RIGHT_SHOULDER_PRESS": lambda gamepad: gamepad.press_button(
+    "LB_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER
+    ),
+    "LB_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER
+    ),
+    "RIGHT_BUMPER_PRESS": lambda gamepad: gamepad.press_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER
     ),
-    "RIGHT_SHOULDER_RELEASE": lambda gamepad: gamepad.release_button(
+    "RIGHT_BUMPER_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER
+    ),
+    "RB_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER
+    ),
+    "RB_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER
     ),
     "BACK_PRESS": lambda gamepad: gamepad.press_button(
@@ -75,18 +72,6 @@ ACTION_MAP = {
     ),
     "START_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START
-    ),
-    "LEFT_THUMB_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB
-    ),
-    "LEFT_THUMB_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB
-    ),
-    "RIGHT_THUMB_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB
-    ),
-    "RIGHT_THUMB_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB
     ),
     # D-Pad
     "DPAD_UP_PRESS": lambda gamepad: gamepad.press_button(
@@ -120,10 +105,22 @@ ACTION_MAP = {
     "LEFT_TRIGGER_RELEASE": lambda gamepad: gamepad.left_trigger_float(
         value_float=0.0
     ),  # Release
+    "LT_PRESS": lambda gamepad: gamepad.left_trigger_float(
+        value_float=1.0
+    ),  # Full press
+    "LT_RELEASE": lambda gamepad: gamepad.left_trigger_float(
+        value_float=0.0
+    ),  # Release
     "RIGHT_TRIGGER_PRESS": lambda gamepad: gamepad.right_trigger_float(
         value_float=1.0
     ),  # Full press
     "RIGHT_TRIGGER_RELEASE": lambda gamepad: gamepad.right_trigger_float(
+        value_float=0.0
+    ),  # Release
+    "RT_PRESS": lambda gamepad: gamepad.right_trigger_float(
+        value_float=1.0
+    ),  # Full press
+    "RT_RELEASE": lambda gamepad: gamepad.right_trigger_float(
         value_float=0.0
     ),  # Release
     # Simplified Joysticks
@@ -156,5 +153,43 @@ ACTION_MAP = {
     ),
     "RIGHT_JOYSTICK_RESET": lambda gamepad: gamepad.right_joystick_float(
         x_value_float=0.0, y_value_float=0.0
+    ),
+    # Xbox Special Button
+    "HOME_BUTTON_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
+    ),
+    "HOME_BUTTON_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
+    ),
+    "XBOX_BUTTON_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
+    ),
+    "XBOX_BUTTON_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
+    ),
+    # Thumbsticks
+    "LEFT_THUMB_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB
+    ),
+    "LEFT_THUMB_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB
+    ),
+    "LS_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB
+    ),
+    "LS_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB
+    ),
+    "RIGHT_THUMB_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB
+    ),
+    "RIGHT_THUMB_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB
+    ),
+    "RS_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB
+    ),
+    "RS_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB
     ),
 }

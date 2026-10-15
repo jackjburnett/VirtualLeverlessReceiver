@@ -1,34 +1,18 @@
-"""
-PS4 (DS4) Action Map Module
+## PS4 (DS4) Action Map Module
+# Maps plain text commands to vgamepad controller commands, using lambda functions.
+# For each of the following inputs, press and release are supported:
+# - Buttons: CROSS, CIRCLE, TRIANGLE, SQUARE, L1, R1, SHARE, OPTIONS
+# - D-Pad: DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT
+# - Triggers (Simplified to full/no hold): L2, R2
+# - Joysticks (Simplified to full/no hold): LEFT_JOYSTICK, RIGHT_JOYSTICK
+# - Special: PS_BUTTON, TOUCHPAD, L3, R3
 
-This module defines the action mapping for PS4 DualShock 4 (DS4) virtual gamepad
-controllers. It maps string-based action commands to lambda functions that
-interact with the virtual DS4 gamepad using the vgamepad library.
-
-Dependencies:
-    vgamepad: A Python library for creating virtual gamepads that simulate
-              PS4 (DS4) controller input on Windows systems
-
-Constants:
-    ACTION_MAP: Dictionary mapping action strings to lambda functions for DS4 inputs
-               - Buttons: CROSS, CIRCLE, TRIANGLE, SQUARE, L1, R1, SHARE, OPTIONS
-               - D-Pad: DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT
-               - Triggers: LEFT_TRIGGER, RIGHT_TRIGGER (float values 0.0-1.0)
-               - Joysticks: LEFT_JOYSTICK, RIGHT_JOYSTICK (x,y coordinates -1.0 to 1.0)
-               - Special: PS_BUTTON, TOUCHPAD, LEFT_THUMB, RIGHT_THUMB
-
-The action mapping supports both press and release events for buttons, and
-simplified binary updates for triggers and joysticks. Each action string
-corresponds to a specific gamepad input that can be executed via the lambda
-functions stored in the ACTION_MAP dictionary.
-"""
-
+# vgamepad (library for VigEmBus interfacing) import for gamepad object
 import vgamepad as vg
 
-# Dictionary mapping messages to lambda functions
+# Dictionary mapping messages to gamepad lambda functions
 ACTION_MAP = {
-    # Buttons
-    # Buttons
+    # Face Buttons and Bumpers
     "CROSS_PRESS": lambda gamepad: gamepad.press_button(
         button=vg.DS4_BUTTONS.DS4_BUTTON_CROSS
     ),
@@ -77,18 +61,6 @@ ACTION_MAP = {
     "OPTIONS_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.DS4_BUTTONS.DS4_BUTTON_OPTIONS
     ),
-    "LEFT_THUMB_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT
-    ),
-    "LEFT_THUMB_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT
-    ),
-    "RIGHT_THUMB_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT
-    ),
-    "RIGHT_THUMB_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT
-    ),
     # D-Pad
     "DPAD_UP_PRESS": lambda gamepad: gamepad.press_button(
         button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH
@@ -115,16 +87,16 @@ ACTION_MAP = {
         button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_EAST
     ),
     # Simplified Triggers
-    "LEFT_TRIGGER_PRESS": lambda gamepad: gamepad.left_trigger_float(
+    "L2_PRESS": lambda gamepad: gamepad.left_trigger_float(
         value_float=1.0
     ),  # Full press
-    "LEFT_TRIGGER_RELEASE": lambda gamepad: gamepad.left_trigger_float(
+    "L2_RELEASE": lambda gamepad: gamepad.left_trigger_float(
         value_float=0.0
     ),  # Release
-    "RIGHT_TRIGGER_PRESS": lambda gamepad: gamepad.right_trigger_float(
+    "R2_PRESS": lambda gamepad: gamepad.right_trigger_float(
         value_float=1.0
     ),  # Full press
-    "RIGHT_TRIGGER_RELEASE": lambda gamepad: gamepad.right_trigger_float(
+    "R2_RELEASE": lambda gamepad: gamepad.right_trigger_float(
         value_float=0.0
     ),  # Release
     # Simplified Joysticks
@@ -170,5 +142,18 @@ ACTION_MAP = {
     ),
     "TOUCHPAD_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_TOUCHPAD
+    ),
+    # Thumbsticks
+    "L3_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT
+    ),
+    "L3_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_LEFT
+    ),
+    "R3_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT
+    ),
+    "R3_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT
     ),
 }
