@@ -156,4 +156,6 @@ ACTION_MAP = {
     "R3_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.DS4_BUTTONS.DS4_BUTTON_THUMB_RIGHT
     ),
+    # Reset
+    "RESET": lambda gamepad: gamepad.reset(),
 }

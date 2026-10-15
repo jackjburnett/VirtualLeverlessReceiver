@@ -5,7 +5,7 @@
 # - D-Pad: DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT
 # - Triggers (Simplified to full/no hold): LEFT_TRIGGER/LT, RIGHT_TRIGGER/RT
 # - Joysticks (Simplified to full/no hold): LEFT_JOYSTICK, RIGHT_JOYSTICK
-# - Special: HOME/XBOX, LEFT_THUMB/LS, RIGHT_THUMB/RS
+# - Special: HOME/GUIDE/XBOX_BUTTON, LEFT_THUMB/LS, RIGHT_THUMB/RS
 
 # vgamepad (library for VigEmBus interfacing) import for gamepad object
 import vgamepad as vg
@@ -155,10 +155,16 @@ ACTION_MAP = {
         x_value_float=0.0, y_value_float=0.0
     ),
     # Xbox Special Button
-    "HOME_BUTTON_PRESS": lambda gamepad: gamepad.press_button(
+    "HOME_PRESS": lambda gamepad: gamepad.press_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
     ),
-    "HOME_BUTTON_RELEASE": lambda gamepad: gamepad.release_button(
+    "HOME_RELEASE": lambda gamepad: gamepad.release_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
+    ),
+    "GUIDE_PRESS": lambda gamepad: gamepad.press_button(
+        button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
+    ),
+    "GUIDE_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_GUIDE
     ),
     "XBOX_BUTTON_PRESS": lambda gamepad: gamepad.press_button(
@@ -192,4 +198,6 @@ ACTION_MAP = {
     "RS_RELEASE": lambda gamepad: gamepad.release_button(
         button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB
     ),
+    # Reset
+    "RESET": lambda gamepad: gamepad.reset(),
 }
