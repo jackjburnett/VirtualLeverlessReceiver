@@ -62,29 +62,29 @@ ACTION_MAP = {
         button=vg.DS4_BUTTONS.DS4_BUTTON_OPTIONS
     ),
     # D-Pad
-    "DPAD_UP_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH
+    "DPAD_UP_PRESS": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH
     ),
-    "DPAD_UP_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NORTH
+    "DPAD_UP_RELEASE": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NONE
     ),
-    "DPAD_DOWN_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTH
+    "DPAD_DOWN_PRESS": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTH
     ),
-    "DPAD_DOWN_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_SOUTH
+    "DPAD_DOWN_RELEASE": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NONE
     ),
-    "DPAD_LEFT_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_WEST
+    "DPAD_LEFT_PRESS": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_WEST
     ),
-    "DPAD_LEFT_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_WEST
+    "DPAD_LEFT_RELEASE": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NONE
     ),
-    "DPAD_RIGHT_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_EAST
+    "DPAD_RIGHT_PRESS": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_EAST
     ),
-    "DPAD_RIGHT_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_EAST
+    "DPAD_RIGHT_RELEASE": lambda gamepad: gamepad.directional_pad(
+        direction=vg.DS4_DPAD_DIRECTIONS.DS4_BUTTON_DPAD_NONE
     ),
     # Simplified Triggers
     "L2_PRESS": lambda gamepad: gamepad.left_trigger_float(
@@ -107,10 +107,10 @@ ACTION_MAP = {
         x_value_float=1.0, y_value_float=0.0
     ),
     "LEFT_JOYSTICK_UP": lambda gamepad: gamepad.left_joystick_float(
-        x_value_float=0.0, y_value_float=1.0
+        x_value_float=0.0, y_value_float=-1.0
     ),
     "LEFT_JOYSTICK_DOWN": lambda gamepad: gamepad.left_joystick_float(
-        x_value_float=0.0, y_value_float=-1.0
+        x_value_float=0.0, y_value_float=1.0
     ),
     "LEFT_JOYSTICK_RESET": lambda gamepad: gamepad.left_joystick_float(
         x_value_float=0.0, y_value_float=0.0
@@ -122,26 +122,26 @@ ACTION_MAP = {
         x_value_float=1.0, y_value_float=0.0
     ),
     "RIGHT_JOYSTICK_UP": lambda gamepad: gamepad.right_joystick_float(
-        x_value_float=0.0, y_value_float=1.0
+        x_value_float=0.0, y_value_float=-1.0
     ),
     "RIGHT_JOYSTICK_DOWN": lambda gamepad: gamepad.right_joystick_float(
-        x_value_float=0.0, y_value_float=-1.0
+        x_value_float=0.0, y_value_float=1.0
     ),
     "RIGHT_JOYSTICK_RESET": lambda gamepad: gamepad.right_joystick_float(
         x_value_float=0.0, y_value_float=0.0
     ),
     # PS4 Special Buttons
-    "PS_BUTTON_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_PS
+    "PS_BUTTON_PRESS": lambda gamepad: gamepad.press_special_button(
+        special_button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_PS
     ),
-    "PS_BUTTON_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_PS
+    "PS_BUTTON_RELEASE": lambda gamepad: gamepad.release_special_button(
+        special_button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_PS
     ),
-    "TOUCHPAD_PRESS": lambda gamepad: gamepad.press_button(
-        button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_TOUCHPAD
+    "TOUCHPAD_PRESS": lambda gamepad: gamepad.press_special_button(
+        special_button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_TOUCHPAD
     ),
-    "TOUCHPAD_RELEASE": lambda gamepad: gamepad.release_button(
-        button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_TOUCHPAD
+    "TOUCHPAD_RELEASE": lambda gamepad: gamepad.release_special_button(
+        special_button=vg.DS4_SPECIAL_BUTTONS.DS4_SPECIAL_BUTTON_TOUCHPAD
     ),
     # Thumbsticks
     "L3_PRESS": lambda gamepad: gamepad.press_button(
