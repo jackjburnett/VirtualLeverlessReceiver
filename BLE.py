@@ -11,15 +11,18 @@ import sys
 from time import perf_counter
 from uuid import UUID
 
+from ControllerRouter import ControllerRouter
+
 SERVICE_UUID = UUID("d749b3ea-d666-4f2f-b49d-3e43fc6db631")
 INPUT_UUID = UUID("d749b3ea-d666-4f2f-b49d-3e43fc6db632")
 logger = logging.getLogger(__name__)
 
 
 class BLEReceiver:
-    def __init__(self, manager=None, parser=None, log_input=False, timings=False):
-        self.manager = manager
-        self.parser = parser
+    def __init__(self, manager=None, parser=None, log_input=False, timings=False, controllers=None):
+        self.controllers = controllers if controllers is not None else ControllerRouter(manager, parser)
+        self.manager = self.controllers.manager
+        self.parser = self.controllers.parser
         self.log_input = log_input
         self.timings = timings
         self.provider = None
@@ -54,12 +57,9 @@ class BLEReceiver:
         radio = await adapter.get_radio_async()
         if radio is None or radio.state != RadioState.ON:
             raise RuntimeError("Turn on the Windows Bluetooth radio first.")
-        if self.manager is None:
-            import GamepadManager
-            self.manager = GamepadManager
-        if self.parser is None:
-            import GamepadParser
-            self.parser = GamepadParser
+        self.controllers.initialize()
+        self.manager = self.controllers.manager
+        self.parser = self.controllers.parser
 
         result = await gatt.GattServiceProvider.create_async(SERVICE_UUID)
         if result.error != BluetoothError.SUCCESS:
@@ -201,42 +201,28 @@ class BLEReceiver:
                 logger.exception("Unable to complete BLE write deferral")
 
     def _receive(self, session, message):
-        if not message:
-            raise ValueError("Empty controller command")
+        message, _ = self.controllers.validate_message(message)
         if session.session_status == self.gatt.GattSessionStatus.CLOSED:
             raise ValueError("BLE session is closed")
         client_id = "ble:" + session.device_id.id
         logger.debug("Controller command from %s: %r", client_id, message)
-        gamepad_type = None
-        if message.startswith("Change gamepad type to:"):
-            gamepad_type = message.replace("Change gamepad type to:", "").strip().upper()
-            if gamepad_type not in ("XBOX", "PS"):
-                raise ValueError("Invalid gamepad type; use XBOX or PS")
         if client_id not in self.clients:
-            if len(self.clients) >= 4:
-                raise RuntimeError("All four BLE controllers are in use")
-            gamepad = self.manager.get_or_create_gamepad(client_id, "XBOX")
-            if gamepad is None:
-                raise RuntimeError("Unable to create virtual controller; check ViGEmBus")
+            self.controllers.connect(client_id)
             try:
                 token = session.add_session_status_changed(
                     lambda sender, args: self._on_session(client_id, session, args)
                 )
             except Exception:
-                self.manager.delete_gamepad(client_id)
+                self.controllers.disconnect(client_id)
                 raise
             self.clients[client_id] = (session, token)
             logger.info("BLE controller connected (%d/4): %s", len(self.clients), client_id)
-        if gamepad_type:
-            self.manager.delete_gamepad(client_id)
-            gamepad = self.manager.get_or_create_gamepad(client_id, gamepad_type)
-        else:
-            gamepad = self.manager.get_or_create_gamepad(client_id)
-        if gamepad is None:
-            self._disconnect(client_id)
-            raise RuntimeError("Unable to create virtual controller; check ViGEmBus")
-        if not gamepad_type:
-            self.parser.parse_gamepad(message, gamepad)
+        try:
+            self.controllers.receive(client_id, message)
+        except Exception:
+            if client_id not in self.controllers.clients:
+                self._disconnect(client_id)
+            raise
 
     def _on_session(self, client_id, session, args):
         try:
@@ -259,7 +245,7 @@ class BLEReceiver:
         except Exception:
             logger.exception("Unable to remove BLE session handler")
         try:
-            self.manager.delete_gamepad(client_id)  # Existing reset/update cleanup.
+            self.controllers.disconnect(client_id)
         except Exception:
             logger.exception("Unable to release BLE controller %s", client_id)
         logger.info("BLE controller disconnected: %s", client_id)
@@ -286,13 +272,16 @@ class BLEReceiver:
             except Exception:
                 logger.exception("Unable to stop Bluetooth advertising")
         # Drain acquired deferrals before releasing sessions and gamepads.
-        if self._pending:
-            await asyncio.gather(*self._pending, return_exceptions=True)
-        for client_id in list(self.clients):
-            self._disconnect(client_id)
-        self.characteristic = self.provider = None
-        self._write_token = self._advertisement_token = None
-        self._finished.set()
+        try:
+            if self._pending:
+                await asyncio.gather(*self._pending, return_exceptions=True)
+        finally:
+            # The tray may cancel cleanup after a timeout. Never leave inputs held.
+            for client_id in list(self.clients):
+                self._disconnect(client_id)
+            self.characteristic = self.provider = None
+            self._write_token = self._advertisement_token = None
+            self._finished.set()
 
 
 async def run(log_input=False, timings=False):
@@ -317,7 +306,7 @@ def main():
     except KeyboardInterrupt:
         logger.info("BLE receiver stopped")
     except ImportError as exc:
-        logger.error("Missing dependency; install requirements-ble.txt: %s", exc)
+        logger.error("Missing dependency; install requirements.txt: %s", exc)
         return 1
     except Exception as exc:
         logger.error("Cannot run BLE receiver: %s", exc)

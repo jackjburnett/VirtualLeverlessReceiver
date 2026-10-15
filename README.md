@@ -1,89 +1,140 @@
 # VirtualLeverless Receiver
 
-## Overview
+A Windows system tray receiver for the VirtualLeverless mobile controller.
+The tray runs **Wi-Fi (WebSocket) and Bluetooth LE simultaneously** through
+`VirtualLeverless.py`, with one shared Gamepad Manager and Gamepad Parser. The
+controller packet format and mappings are unchanged.
 
-VirtualLeverless Receiver is a WebSocket-based server for Windows that enables [VirtualLeverless](https://github.com/jackjburnett/VirtualLeverless) to communicate with a PC. It creates a virtual controller for each connected client using [vgamepad](https://pypi.org/project/vgamepad/) and the [ViGEmBus driver](https://vigem.org/projects/ViGEmBus/) to simulate pressing and releasing buttons and triggers of an Xbox or PlayStation controller.
+## Run the tray application
 
----
+Use Windows 10/11 x64 and the
+[ViGEmBus driver](https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0).
+Bluetooth additionally needs an adapter with BLE peripheral support. Wi-Fi can
+continue working if Bluetooth is unavailable or disabled.
+The executable includes Python and its application dependencies. ViGEmBus remains
+a separate installation.
 
-## Requirements
+Double-click `dist\tray\VirtualLeverlessReceiver.exe`. On the first launch, the
+application starts BLE advertising and a WebSocket listener on **TCP port 8000**.
+It appears in the Windows notification area; it may be inside the
+tray overflow menu. It has no console or main window.
 
-- Windows 10 or later  
-- **ViGEmBus driver** installed (required for virtual controllers)
-  - Download ViGEmBus: [https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0](https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0)
+Right-click the icon for:
 
-No Python installation is required, the server is provided as a standalone `.exe`.
+- Wi-Fi/Bluetooth status and a combined connected controller count.
+- **Enable Wi-Fi**, **Enable Bluetooth**, and **Restart Connections**.
+- **Show Status**, also available by left-clicking the icon.
+- **Settings > Connection Settings...** for the Wi-Fi port and transport toggles.
+- **Settings > Start with Windows**, an optional per-user setting, off by default.
+- **Open Logs** and **Exit**.
 
----
+Closing a settings/status window leaves the receiver running. Disabling a
+transport releases its controllers. Changing the port restarts only Wi-Fi,
+disconnecting Wi-Fi clients; BLE controllers stay connected. Restart Connections
+restarts the enabled transports. Exit closes sockets, stops advertising,
+releases inputs, and waits for the worker to finish. A second tray copy exits
+without creating another receiver.
 
-## Quick Start
+Stop standalone `BLE.py`, `WiFI.py`, or `VirtualLeverless.py` instances before using
+the tray application. Keep the
+executable in a permanent location before enabling Start with Windows, because
+the setting records its path. Bluetooth failures appear in the tray status and
+log; restore the radio and choose Restart Connections to retry.
 
-1. Install ViGEmBus if not already installed. Run the installer and follow the prompts.  
-2. Download `VirtualLeverlessReceiver.exe` from the [most recent release (v2.0)](https://github.com/jackjburnett/VirtualLeverlessReceiver/releases/tag/v2.0).  
-3. Set up a Cloudflare Tunnel (needed if using the official VirtualLeverless):  
-   - Download and install cloudflared from [https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/)  
-   - Run a tunnel to forward WebSocket traffic to the server IP/port:  
-     `"cloudflared tunnel --url 127.0.0.1:8080"`  
-4. Run the server:  
-   - Double-click the `.exe`  
-   - Or run from a terminal:  
-     `"cd path\to\exe"`  
-     `"VirtualLeverlessReceiver.exe"`  
-5. Connect VirtualLeverless to the exposed IP/port (or the Cloudflare Tunnel URL if using remote access).
+## Run from source
 
----
-
-## Simple Installation & Usage
-
-1. Install ViGEmBus if not already installed.  
-2. Download `VirtualLeverlessReceiver.exe` from the [most recent release (v2.0)](https://github.com/jackjburnett/VirtualLeverlessReceiver/releases/tag/v2.0).  
-3. Run the `.exe` by double-clicking it or via a terminal:  
-   `"cd path\to\exe"`  
-   `"VirtualLeverlessReceiver.exe"`  
-
-> ⚠️ **Remote Access:** To allow VirtualLeverless to connect from outside your local network, you must use a tunneling service such as Cloudflare Tunnel. Forward WebSocket traffic to the IP/port the server is listening on.
-
----
-
-## Logs
-
-All received messages are logged with timestamps and client IDs.  
-
-Logs are stored in a `logs` folder next to the `.exe`.
-
----
-
-## Advanced Installation (Python)
-
-If you want to run the server from source:
-
-1. Clone the repository:  
-   `"git clone https://github.com/jackjburnett/VirtualLeverlessReceiver.git"`  
-   `"cd VirtualLeverlessReceiver"`  
-
-2. Create and activate a Python virtual environment:  
-   `"python -m venv venv"`  
-   `"venv\Scripts\activate"`  
-
-3. Install dependencies:  
-   `"pip install -r requirements.txt"`  
-
-4. Start the server with a custom IP/port (Default: `--ip 127.0.0.1 --port 8080`):  
-   `"python VirtualLeverlessReceiver.py --ip <IP_ADDRESS> --port <PORT>"`  
-
-For remote connections, use a tunneling service like Cloudflare Tunnel to forward WebSocket traffic.
-
----
-
-## Notes
-
-### BLE prototype (Python)
-
-Run a standalone Windows BLE peripheral using the existing Gamepad Manager and
-Parser. The Wi-Fi receiver and controller mappings are unchanged.
+Use a working Python environment (the build was verified with Python 3.13 x64):
 
 ```powershell
-python -m pip install -r requirements-ble.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\pythonw.exe Receiver.pyw
+```
+
+For a visible development terminal, use `python.exe Receiver.pyw` with the same
+environment. Application output still goes to the log file. The optional
+`--no-bluetooth` and `--no-wifi` arguments start the tray with the chosen transport
+stopped. `--port 9000` overrides the saved port for that launch. CLI overrides
+are not saved unless you subsequently save settings in the tray.
+
+For the combined receiver without a tray:
+
+```powershell
+.\.venv\Scripts\python.exe VirtualLeverless.py
+# Or choose a port / run Wi-Fi only:
+.\.venv\Scripts\python.exe VirtualLeverless.py --port 9000 --no-bluetooth
+```
+
+Press Ctrl+C to shut down the console receiver and release its controllers.
+Both entry points load the same per-user settings file:
+`%LOCALAPPDATA%\VirtualLeverlessReceiver\settings.json`. Tray changes are saved
+automatically. The default port is 8000; valid ports are 1 through 65535.
+`VLR_CONFIG_DIR` can override the settings directory for portable installs/tests.
+
+## Connect over Wi-Fi
+
+Connect the phone to the same local network and open a WebSocket connection to
+`ws://<PC's LAN IPv4 address>:8000`, substituting the port if changed. The receiver
+binds `0.0.0.0` (all IPv4 interfaces), so use the PC's LAN address on the phone.
+Allow the receiver through Windows Firewall on your private network if prompted.
+It does not configure router forwarding or change firewall rules itself.
+
+Send one existing command per WebSocket message, e.g. `A_PRESS`, then `A_RELEASE`.
+Xbox/PS switching uses `Change gamepad type to: PS` or `Change gamepad type to: XBOX`,
+just like BLE. Wi-Fi allocates a controller at connection; BLE allocates one at
+its first write. Normal closure, network failure detection, disabling a transport,
+and Exit reset/release the affected controller inputs.
+
+The default limit is **four controllers total across both transports**, matching
+the initial project target and the four user slots supported by
+[XInput](https://learn.microsoft.com/en-us/windows/win32/xinput/getting-started-with-xinput).
+It is an application policy, not a BLE connection limit. Other physical XInput
+controllers can occupy Windows slots too; this limit does not reserve those slots.
+Support above four would depend on the controller type and the game's input API.
+
+## Build the executable
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+.\.venv\Scripts\python.exe -m PyInstaller --noconfirm --distpath dist/tray --workpath build/tray Receiver.spec
+```
+
+The result is a single `dist\tray\VirtualLeverlessReceiver.exe`. The new
+`Receiver.spec` discovers the installed WinRT and ViGEm client libraries; it has
+no machine-specific DLL paths and includes both transports and the settings UI.
+
+## Modules and logging
+
+- `Receiver.pyw` starts the console-free tray application.
+- `TrayApp.py` owns the tray icon, menus, startup setting, and rotating logs.
+- `VirtualLeverless.py` coordinates both transports on one asyncio worker, so all
+  controller creation, parsing, and cleanup happen on the same thread.
+- `ControllerRouter.py` shares controller ownership, type switching and the total
+  controller limit. IDs use `wifi:` and `ble:` prefixes to avoid collisions.
+- `WebSocketServer.py` and `BLE.py` implement their respective connection lifecycles
+  and forward commands to the shared router.
+- `AppSettings.py` validates and persists the port and transport enable settings.
+- `GamepadManager.py`, `GamepadParser.py`, and `data_store/` retain their mappings.
+- `BluetoothManager.py` remains available for standalone BLE-only embedding; the
+  tray uses the combined coordinator instead.
+
+Logs are stored in
+`%LOCALAPPDATA%\VirtualLeverlessReceiver\logs\receiver.log`, with three rotating
+backups. Existing gamepad print output is captured there too. Per-packet logging
+stays off during normal play. `VLR_LOG_DIR` can override the log folder for a
+portable install or isolated test.
+
+The legacy `WiFI.py` entry point remains available for Wi-Fi-only terminal use;
+its default bind address/port are now `0.0.0.0:8000`. For shared settings and
+controller ownership, use `VirtualLeverless.py` or the tray instead of launching
+separate transport processes.
+
+## Standalone BLE testing
+
+Run a standalone Windows BLE peripheral using the existing Gamepad Manager and
+Parser. Controller mappings and the BLE service/characteristic UUIDs are unchanged.
+
+```powershell
+python -m pip install -r requirements.txt
 python BLE.py
 ```
 
@@ -148,7 +199,8 @@ Each phone's first input write creates its own Xbox controller (up to four BLE
 clients). GATT session closure deletes that phone's controller through the
 existing manager, which resets its inputs. A discovered/connected phone that has
 not written input does not yet allocate a controller. Type switching follows the
-existing WebSocket behavior. Wi-Fi can be run separately alongside this script.
+existing WebSocket behavior. Use the combined receiver for Wi-Fi and BLE together
+with a shared controller limit and one worker.
 
 The characteristic uses plain writes without pairing/authentication; this is a
 local prototype. Adapter or advertising failures stop the script and clean up;

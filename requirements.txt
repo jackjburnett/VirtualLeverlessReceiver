@@ -1,6 +1,8 @@
 websockets~=15.0.1
 vgamepad~=0.1.0
 DateTime~=5.5
+pystray>=0.19.5,<0.20
+Pillow>=11,<12
 winrt-runtime==3.2.1; sys_platform == "win32"
 winrt-Windows.Foundation==3.2.1; sys_platform == "win32"
 winrt-Windows.Foundation.Collections==3.2.1; sys_platform == "win32"

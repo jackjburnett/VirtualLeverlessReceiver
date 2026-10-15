@@ -149,6 +149,25 @@ class BLETests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.receiver.clients, {})
         self.assertIsNone(self.session.handler)
 
+    async def test_cancelled_cleanup_still_releases_controller_inputs(self):
+        self.receiver._receive(self.session, "A_PRESS")
+        args = WriteArgs(self.session, b"A_RELEASE")
+
+        async def blocked_request():
+            await asyncio.Future()
+
+        args.get_request_async = blocked_request
+        self.receiver._queue_write(args, args.deferral)
+        await asyncio.sleep(0)
+        cleanup = asyncio.create_task(self.receiver.stop())
+        await asyncio.sleep(0)
+        cleanup.cancel()
+        with self.assertRaises(asyncio.CancelledError):
+            await cleanup
+        self.assertEqual(self.manager.pads, {})
+        self.assertEqual(self.receiver.clients, {})
+        args.deferral.complete.assert_called_once()
+
     async def test_transient_startup_abort_and_later_adapter_failure(self):
         success = SimpleNamespace(name="SUCCESS")
         self.receiver._advertisement_changed(AdvertisementStatus.ABORTED, success)

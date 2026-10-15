@@ -23,7 +23,7 @@ The application supports:
 - Graceful error handling for invalid configurations
 
 Usage:
-    python WiFI.py --ip 127.0.0.1 --port 8080 --logging
+    python WiFI.py --ip 0.0.0.0 --port 8000 --logging
 """
 
 import argparse
@@ -72,21 +72,21 @@ def validate_port(port):
 if __name__ == "__main__":
     # Set up argument parsing for IP and Port
     parser = argparse.ArgumentParser(
-        description="VirtualLeverless Receiver (Python UDP server)"
+        description="VirtualLeverless Receiver (WebSocket server)"
     )
     parser.add_argument(
         "--ip",
         "--ipaddress",
         type=str,
-        default="127.0.0.1",
-        help="IP address to bind the server (default: 127.0.0.1)",
+        default="0.0.0.0",
+        help="IP address to bind the server (default: 0.0.0.0, all IPv4 interfaces)",
     )
     parser.add_argument(
         "--port",
         "--p",
         type=int,
-        default=8080,
-        help="Port number to bind the server (default: 8080)",
+        default=8000,
+        help="Port number to bind the server (default: 8000)",
     )
 
     parser.add_argument(
@@ -104,5 +104,5 @@ if __name__ == "__main__":
     validate_ip(args.ip)
     validate_port(args.port)
 
-    # Start the UDP server with provided IP and Port
+    # Start the WebSocket server with provided IP and Port
     asyncio.run(start_websocket_server(args.ip, args.port, args.logging))
