@@ -1,0 +1,7 @@
+{% if site.logo %}
+  <span class="site-logo" aria-hidden="true"></span>
+  <span class="site-brand-text" aria-hidden="true">Link</span>
+  <span class="sr-only">{{ site.title | escape }}</span>
+{% else %}
+  {{ site.title | escape }}
+{% endif %}

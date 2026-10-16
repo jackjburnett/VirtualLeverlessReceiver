@@ -4,6 +4,21 @@ h1,
   font-weight: 700;
 }
 
+.site-title {
+  gap: 0.5rem;
+}
+
+.site-title .site-logo {
+  flex: 0 0 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.site-brand-text {
+  font-size: 2rem;
+  line-height: 1;
+}
+
 h2,
 h3,
 h4 {
