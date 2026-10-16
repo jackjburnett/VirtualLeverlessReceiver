@@ -1,0 +1,29 @@
+h1,
+.site-title {
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 700;
+}
+
+h2,
+h3,
+h4 {
+  font-weight: 700;
+}
+
+// Keep the theme's active page heavier than the other navigation links.
+.site-nav .nav-list {
+  font-weight: 500;
+}
+
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $sp-3;
+  margin-block: $sp-6;
+}
+
+.landing-actions .btn {
+  margin: 0;
+}
+
+// TODO: Add any further visual customization here.

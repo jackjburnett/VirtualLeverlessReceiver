@@ -1,0 +1,30 @@
+<nav aria-label="Main" id="site-nav" class="site-nav">
+  <ul class="nav-list">
+    {% for item in site.data.navigation %}
+      <li class="nav-list-item">
+        {% if item.children %}
+          <button class="nav-list-expander btn-reset" aria-label="{{ item.title | escape }} submenu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+          </button>
+        {% endif %}
+        {% if item.external %}
+          <a href="{{ item.url | escape }}" class="nav-list-link external">
+            {{ item.title | escape }}
+            <svg viewBox="0 0 24 24" aria-label="External site"><use xlink:href="#svg-external-link"></use></svg>
+          </a>
+        {% else %}
+          <a href="{{ item.url | relative_url }}" class="nav-list-link">{{ item.title | escape }}</a>
+        {% endif %}
+        {% if item.children %}
+          <ul class="nav-list">
+            {% for child in item.children %}
+              <li class="nav-list-item">
+                <a href="{{ child.url | relative_url }}" class="nav-list-link">{{ child.title | escape }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</nav>

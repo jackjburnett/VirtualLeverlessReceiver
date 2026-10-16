@@ -1,20 +1,26 @@
 ---
 layout: default
-title: Patch Notes
+title: Home
+permalink: /
+nav_order: 0
 ---
 
-# Download Most Recent Release
-[Version 2.0](https://github.com/jackjburnett/VirtualLeverlessReceiver/releases)
+# {{ site.title }}
+{: .fs-9 }
 
-# Patch Notes
+<p class="fs-6 fw-300">
+  Desktop server for VirtuaStick
+</p>
 
-Here are the latest patch notes:
+<div class="landing-actions">
+  <a href="{{ site.repository_url }}/releases/latest" class="btn btn-primary fs-5">Get the Latest Release</a>
+    <a href="{{ site.repository_url }}" class="btn fs-5">View VSLink on GitHub</a>
+</div>
 
-- [Version 2.0](patch_notes/v2.0.md)
-- [Version 1.4](patch_notes/v1.4.md)
-- [Version 1.3](patch_notes/v1.3.md)
-- [Version 1.2](patch_notes/v1.2.md)
-- [Version 1.1](patch_notes/v1.1.md)
-- [Version 1.0](patch_notes/v1.0.md)
+---
 
-[View Releases](releases)
+<!-- TODO: Add the README content. -->
+
+## About the project
+
+{{ site.title }} is an open-source server created to support [VirtuaStick](https://jackjburnett.github.io/VirtuaStick/), developed by [Jack Burnett](https://jackjburnett.github.io/) ([GitHub](https://github.com/jackjburnett)) and built using Python.

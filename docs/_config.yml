@@ -1,8 +1,34 @@
-title: VirtualLeverless Receiver
-description: A collection of patch notes and releases for VirtualLeverless Receiver.
-theme: minima
+title: VSLink
+description: "Homepage and documentation for VSLink."
+
+remote_theme: just-the-docs/just-the-docs
+
 markdown: kramdown
 kramdown:
   input: GFM
-gems:
-  - jekyll-fontawesome
+
+color_scheme: system #(light/dark/system)
+search_enabled: true
+
+logo: "/assets/logo.png"
+favicon_ico: "/assets/favicon.ico"
+
+url: "https://jackjburnett.github.io"
+baseurl: "/VSLink"
+
+repository_url: https://github.com/jackjburnett/VSLink
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      has_toc: false
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+
+plugins:
+  - jekyll-remote-theme

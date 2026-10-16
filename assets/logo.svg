@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="130.095mm"
+   height="130.09515mm"
+   viewBox="0 0 130.095 130.09515"
+   version="1.1"
+   id="svg1"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true">
+    <inkscape:grid
+       id="grid3"
+       units="mm"
+       originx="0"
+       originy="-134.99998"
+       spacingx="0.99999998"
+       spacingy="1"
+       empcolor="#0099e5"
+       empopacity="0.30196078"
+       color="#0099e5"
+       opacity="0.14901961"
+       empspacing="5"
+       enabled="true"
+       visible="true" />
+    <inkscape:page
+       x="0"
+       y="0"
+       width="130.095"
+       height="130.09515"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1" />
+  <rect
+     style="fill:none;stroke:#8b979f;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+     id="rect3-7"
+     width="120.095"
+     height="120.09515"
+     x="-125.095"
+     y="4.9999981"
+     ry="26.197227"
+     transform="scale(-1,1)"
+     inkscape:export-filename="logo.png"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:122.092px;font-family:Rajdhani;-inkscape-font-specification:'Rajdhani Bold';writing-mode:lr-tb;direction:ltr;fill:#398dc5;fill-opacity:1;stroke:#2fa778;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
+     x="13.460752"
+     y="93.400497"
+     id="text3-6"
+     transform="scale(0.95795405,1.0438914)"><tspan
+       sodipodi:role="line"
+       id="tspan3-1"
+       style="fill:#398dc5;fill-opacity:1;stroke:#2fa778;stroke-width:0;stroke-dasharray:none;stroke-opacity:1"
+       x="13.460752"
+       y="93.400497">vs</tspan></text>
+</svg>

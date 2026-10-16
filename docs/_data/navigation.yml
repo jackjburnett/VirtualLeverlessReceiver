@@ -1,0 +1,22 @@
+- title: Home
+  url: /
+- title: Installation
+  url: /installation/
+  children:
+    - title: Windows
+      url: /installation/windows/
+    - title: Mac
+      url: /installation/mac/
+    - title: Linux
+      url: /installation/linux/
+- title: Configuration
+  url: /configuration/
+- title: Releases
+  url: https://github.com/jackjburnett/VSLink/releases
+  external: true
+- title: VirtuaStick
+  url: https://jackjburnett.github.io/VirtuaStick/
+  external: true
+- title: VSReceiver
+  url: https://jackjburnett.github.io/VSReceiver
+  external: true
