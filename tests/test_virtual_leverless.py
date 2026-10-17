@@ -107,7 +107,7 @@ class CoordinatorTests(unittest.TestCase):
 
     def test_ble_failure_leaves_wifi_running_and_restart_recovers(self):
         self.fail_ble = True
-        with self.assertLogs("VirtualLeverless", level="ERROR"):
+        with self.assertLogs("VSLink", level="ERROR"):
             self.receiver.start()
             self.wait_for(lambda: self.receiver.status.bluetooth.state == "Error")
         self.wait_for(lambda: self.receiver.status.wifi.state == "Listening")
@@ -123,7 +123,7 @@ class CoordinatorTests(unittest.TestCase):
         with socket.socket() as occupied:
             occupied.bind(("0.0.0.0", self.port))
             occupied.listen()
-            with self.assertLogs("VirtualLeverless", level="ERROR"):
+            with self.assertLogs("VSLink", level="ERROR"):
                 self.receiver.start()
                 self.wait_for(lambda: self.receiver.status.wifi.state == "Error")
             self.wait_for(lambda: self.receiver.status.bluetooth.state == "Advertising")

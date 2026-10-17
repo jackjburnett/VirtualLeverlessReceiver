@@ -1,7 +1,7 @@
 """
-VirtualLeverless Receiver Main Application
+VSLink Wi-Fi Server
 
-This module serves as the main entry point for the VirtualLeverless Receiver application.
+This module serves as the standalone Wi-Fi entry point for VSLink.
 It provides command-line argument parsing, IP and port validation, and initializes the
 WebSocket server for virtual gamepad connections.
 
@@ -68,11 +68,11 @@ def validate_port(port):
         )
 
 
-# Runs VirtualLeverless Receiver, checking for arguments.
+# Runs the standalone VSLink Wi-Fi server, checking for arguments.
 if __name__ == "__main__":
     # Set up argument parsing for IP and Port
     parser = argparse.ArgumentParser(
-        description="VirtualLeverless Receiver (WebSocket server)"
+        description="VSLink Wi-Fi server for VirtuaStick"
     )
     parser.add_argument(
         "--ip",

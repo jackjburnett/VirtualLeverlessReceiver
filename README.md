@@ -1,6 +1,6 @@
-# VirtualLeverless Receiver
+# VSLink
 
-A Windows system tray receiver for the VirtualLeverless mobile controller.
+A Windows system tray server for [VirtuaStick](https://jackjburnett.github.io/VirtuaStick/).
 The tray runs **Wi-Fi (WebSocket) and Bluetooth LE simultaneously** through
 `VSLink.py`, with one shared Gamepad Manager and Gamepad Parser. The
 controller packet format and mappings are unchanged.
@@ -14,7 +14,7 @@ continue working if Bluetooth is unavailable or disabled.
 The executable includes Python and its application dependencies. ViGEmBus remains
 a separate installation.
 
-Double-click `dist\tray\VirtualLeverlessReceiver.exe`. On the first launch, the
+Double-click `dist\tray\VSLink.exe`. On the first launch, the
 application starts BLE advertising and a WebSocket listener on **TCP port 8000**.
 It appears in the Windows notification area; it may be inside the
 tray overflow menu. It has no console or main window.
@@ -27,6 +27,19 @@ Right-click the icon for:
 - **Settings > Connection Settings...** for the Wi-Fi port and transport toggles.
 - **Settings > Start with Windows**, an optional per-user setting, off by default.
 - **Open Logs** and **Exit**.
+
+The tray uses the VSLink PNGs in `assets/` and updates automatically:
+
+| Icon | State |
+| --- | --- |
+| `error.png` | A transport has failed; the status window shows the error. |
+| `offline.png` | No transport is ready, including startup or both transports disabled. |
+| `online.png` | Wi-Fi is listening or Bluetooth is advertising, with no controllers connected. |
+| `1-connected.png` through `4-connected.png` | One through four controllers connected across both transports. |
+
+An error takes priority over connected artwork; the tooltip and menu still show
+the controller count. The PNGs load directly through Pillow, so separate `.ico`
+files are only needed for the executable/window icon (`assets/favicon.ico`).
 
 Closing a settings/status window leaves the receiver running. Disabling a
 transport releases its controllers. Changing the port restarts only Wi-Fi,
@@ -59,9 +72,9 @@ are not saved unless you subsequently save settings in the tray.
 For the combined receiver without a tray:
 
 ```powershell
-.\.venv\Scripts\python.exe VirtualLeverless.py
+.\.venv\Scripts\python.exe VSLink.py
 # Or choose a port / run Wi-Fi only:
-.\.venv\Scripts\python.exe VirtualLeverless.py --port 9000 --no-bluetooth
+.\.venv\Scripts\python.exe VSLink.py --port 9000 --no-bluetooth
 ```
 
 Press Ctrl+C to shut down the console receiver and release its controllers.
@@ -94,18 +107,21 @@ Support above four would depend on the controller type and the game's input API.
 ## Build the executable
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m PyInstaller --noconfirm --distpath dist/tray --workpath build/tray Receiver.spec
 ```
 
-The result is a single `dist\tray\VirtualLeverlessReceiver.exe`. The new
+The result is a single `dist\tray\VSLink.exe`. The
 `Receiver.spec` discovers the installed WinRT and ViGEm client libraries; it has
-no machine-specific DLL paths and includes both transports and the settings UI.
+no machine-specific DLL paths and includes both transports, the settings UI,
+the state PNGs, and the VSLink favicon. After replacing an older executable,
+enable Start with Windows again to register the new executable path.
 
 ## Modules and logging
 
 - `Receiver.pyw` starts the console-free tray application.
 - `TrayApp.py` owns the tray icon, menus, startup setting, and rotating logs.
+- `AppBranding.py` selects the status artwork and locates bundled branding assets.
 - `VSLink.py` coordinates both transports on one asyncio worker, so all
   controller creation, parsing, and cleanup happen on the same thread.
 - `ControllerRouter.py` shares controller ownership, type switching and the total

@@ -1,4 +1,4 @@
-"""Console-free application entry point. Wi-Fi is not started by this application."""
+"""Console-free entry point for the VSLink Wi-Fi and BLE tray server."""
 
 from TrayApp import main
 

@@ -90,7 +90,7 @@ class VirtualLeverless:
             self._commands.put((command, settings))
             if self._thread is None or not self._thread.is_alive():
                 self._thread = threading.Thread(target=self._thread_main,
-                                                name="VirtualLeverless", daemon=False)
+                                                name="VSLink", daemon=False)
                 self._thread.start()
             loop, event = self._loop, self._wake_event
         if loop is not None and event is not None:
@@ -209,7 +209,7 @@ class VirtualLeverless:
 
 
 def main():
-    arguments = argparse.ArgumentParser(description="VirtualLeverless Wi-Fi and BLE receiver")
+    arguments = argparse.ArgumentParser(description="VSLink Wi-Fi and BLE server for VirtuaStick")
     arguments.add_argument("--port", type=int, help="Wi-Fi WebSocket port (default: saved setting or 8000)")
     arguments.add_argument("--no-wifi", action="store_true")
     arguments.add_argument("--no-bluetooth", action="store_true")

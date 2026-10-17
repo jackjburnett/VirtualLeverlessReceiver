@@ -72,7 +72,7 @@ class BLEReceiver:
             | gatt.GattCharacteristicProperties.WRITE_WITHOUT_RESPONSE
         )
         parameters.write_protection_level = gatt.GattProtectionLevel.PLAIN
-        parameters.user_description = "VirtualLeverless controller input"
+        parameters.user_description = "VSLink controller input"
         result = await self.provider.service.create_characteristic_async(INPUT_UUID, parameters)
         if result.error != BluetoothError.SUCCESS:
             raise RuntimeError(f"Input characteristic creation failed: {result.error.name}")

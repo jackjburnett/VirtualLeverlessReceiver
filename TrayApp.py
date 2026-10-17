@@ -1,4 +1,4 @@
-"""Windows tray shell for the shared Wi-Fi and BLE receiver."""
+"""VSLink's Windows tray shell for the shared Wi-Fi and BLE receiver."""
 
 import argparse
 import ctypes
@@ -13,22 +13,12 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 import pystray
-from PIL import Image, ImageDraw
 
+from AppBranding import APP_NAME, asset_path, load_tray_icons, tray_icon_name
 from AppSettings import SettingsStore
 from VSLink import VirtualLeverless
 
-APP_NAME = "VirtualLeverless Receiver"
 logger = logging.getLogger(__name__)
-
-
-def create_icon(color="#1976d2"):
-    image = Image.new("RGBA", (64, 64))
-    draw = ImageDraw.Draw(image)
-    draw.rounded_rectangle((2, 2, 62, 62), radius=14, fill=color)
-    draw.line([(30, 10), (44, 22), (20, 44)], fill="white", width=5)
-    draw.line([(20, 20), (44, 42), (30, 54), (30, 10)], fill="white", width=5)
-    return image
 
 
 class _LogStream(io.TextIOBase):
@@ -61,7 +51,8 @@ def configure_logging(directory=None):
 
 class WindowsStartup:
     key = r"Software\Microsoft\Windows\CurrentVersion\Run"
-    value_name = "VirtualLeverlessReceiver"
+    value_name = APP_NAME
+    legacy_value_name = "VirtualLeverlessReceiver"
 
     def __init__(self):
         if getattr(sys, "frozen", False):
@@ -76,19 +67,33 @@ class WindowsStartup:
         import winreg
         try:
             with winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.key) as key:
-                return winreg.QueryValueEx(key, self.value_name)[0] == self.command
+                for name in (self.value_name, self.legacy_value_name):
+                    try:
+                        if winreg.QueryValueEx(key, name)[0] == self.command:
+                            return True
+                    except FileNotFoundError:
+                        pass
         except OSError:
-            return False
+            pass
+        return False
 
     def set_enabled(self, enabled):
         import winreg
         if enabled:
             with winreg.CreateKey(winreg.HKEY_CURRENT_USER, self.key) as key:
                 winreg.SetValueEx(key, self.value_name, 0, winreg.REG_SZ, self.command)
+                try:
+                    winreg.DeleteValue(key, self.legacy_value_name)
+                except FileNotFoundError:
+                    pass
         else:
             try:
                 with winreg.OpenKey(winreg.HKEY_CURRENT_USER, self.key, 0, winreg.KEY_SET_VALUE) as key:
-                    winreg.DeleteValue(key, self.value_name)
+                    for name in (self.value_name, self.legacy_value_name):
+                        try:
+                            winreg.DeleteValue(key, name)
+                        except FileNotFoundError:
+                            pass
             except FileNotFoundError:
                 pass
 
@@ -107,8 +112,10 @@ class TrayApplication:
         self._settings_window = None
         self._status_window = None
         self._status_label = None
+        self._tray_images = load_tray_icons()
+        self._icon_name = tray_icon_name(self.manager.status)
         item = pystray.MenuItem
-        self.icon = pystray.Icon("VirtualLeverlessReceiver", create_icon(), APP_NAME, pystray.Menu(
+        self.icon = pystray.Icon(APP_NAME, self._tray_images[self._icon_name], APP_NAME, pystray.Menu(
             item(lambda _: f"Wi-Fi: {self.manager.status.wifi.state} (port {self.manager.status.wifi_port})", None, enabled=False),
             item(lambda _: f"Bluetooth: {self.manager.status.bluetooth.state}", None, enabled=False),
             item(lambda _: f"Controllers: {self.manager.status.controllers}/4", None, enabled=False),
@@ -153,6 +160,7 @@ class TrayApplication:
             return
         window = self._status_window = tk.Toplevel(root)
         window.title(f"{APP_NAME} Status")
+        window.iconbitmap(str(asset_path("favicon.ico")))
         window.resizable(False, False)
         frame = ttk.Frame(window, padding=20)
         frame.grid()
@@ -194,7 +202,7 @@ class TrayApplication:
             self.apply_settings(**{field: not getattr(self.manager.settings, field)})
         except (OSError, ValueError):
             logger.exception("Unable to save connection settings")
-            self.icon.notify("Could not save settings. Check the receiver log.", APP_NAME)
+            self.icon.notify(f"Could not save settings. Check the {APP_NAME} log.", APP_NAME)
 
     def show_settings(self):
         # Tray callbacks run on pystray's thread; Tk stays on the main UI thread.
@@ -220,6 +228,7 @@ class TrayApplication:
             return
         window = self._settings_window = tk.Toplevel(root)
         window.title(f"{APP_NAME} Settings")
+        window.iconbitmap(str(asset_path("favicon.ico")))
         window.resizable(False, False)
         frame = ttk.Frame(window, padding=20)
         frame.grid()
@@ -231,7 +240,7 @@ class TrayApplication:
         ttk.Checkbutton(frame, text="Enable Bluetooth LE", variable=bluetooth).grid(row=1, column=0, columnspan=2, sticky="w", pady=(4, 14))
         ttk.Label(frame, text="Wi-Fi WebSocket port").grid(row=2, column=0, sticky="w", padx=(0, 14))
         ttk.Entry(frame, textvariable=port, width=10).grid(row=2, column=1, sticky="e")
-        ttk.Label(frame, text="Phones connect to ws://<PC IP>:<port>\nChanging the port disconnects Wi-Fi controllers.").grid(
+        ttk.Label(frame, text="VirtuaStick connects to ws://<PC IP>:<port>\nChanging the port disconnects Wi-Fi controllers.").grid(
             row=3, column=0, columnspan=2, sticky="w", pady=14)
 
         def save():
@@ -260,7 +269,7 @@ class TrayApplication:
             self.startup.set_enabled(not self.startup.enabled())
         except OSError:
             logger.exception("Unable to change Windows startup setting")
-            self.icon.notify("Could not update the startup setting. Check the receiver log.", APP_NAME)
+            self.icon.notify(f"Could not update the startup setting. Check the {APP_NAME} log.", APP_NAME)
 
     def exit(self):
         self._closing.set()
@@ -275,24 +284,28 @@ class TrayApplication:
             status = self.manager.status
             if status == previous:
                 continue
-            icon.title = (f"{APP_NAME}\nWi-Fi: {status.wifi.state}:{status.wifi_port} | "
-                          f"BLE: {status.bluetooth.state}\nControllers: {status.controllers}/4")
-            errors = "\n".join(filter(None, (status.wifi.error, status.bluetooth.error)))
-            color = "#c62828" if errors else (
-                "#2e7d32" if status.controllers else "#1976d2" if (
-                    status.wifi.state == "Listening" or status.bluetooth.state == "Advertising") else "#616161"
-            )
-            icon.icon = create_icon(color)
-            icon.update_menu()
-            if errors and (previous is None or (status.wifi.error, status.bluetooth.error) != (
-                    previous.wifi.error, previous.bluetooth.error)):
-                icon.notify(errors, APP_NAME)
+            self._update_tray(status, previous)
             previous = status
+
+    def _update_tray(self, status, previous=None):
+        self.icon.title = (f"{APP_NAME}\nWi-Fi: {status.wifi.state}:{status.wifi_port} | "
+                           f"BLE: {status.bluetooth.state}\nControllers: {status.controllers}/4")
+        name = tray_icon_name(status)
+        if name != self._icon_name:
+            self.icon.icon = self._tray_images[name]
+            self._icon_name = name
+        self.icon.update_menu()
+        errors = "\n".join(filter(None, (status.wifi.error, status.bluetooth.error)))
+        if errors and (previous is None or (status.wifi.error, status.bluetooth.error) != (
+                previous.wifi.error, previous.bluetooth.error)):
+            self.icon.notify(errors, APP_NAME)
 
     def run(self):
         import tkinter as tk
         root = tk.Tk()
         root.withdraw()
+        root.title(APP_NAME)
+        root.iconbitmap(default=str(asset_path("favicon.ico")))
         root.protocol("WM_DELETE_WINDOW", self.exit)
 
         def poll():
@@ -313,7 +326,7 @@ class TrayApplication:
 
 
 def main():
-    arguments = argparse.ArgumentParser(description="VirtualLeverless Wi-Fi and BLE system tray receiver")
+    arguments = argparse.ArgumentParser(description=f"{APP_NAME} Wi-Fi and BLE system tray server for VirtuaStick")
     arguments.add_argument("--no-bluetooth", action="store_true", help="Launch the tray with Bluetooth stopped")
     arguments.add_argument("--no-wifi", action="store_true", help="Launch the tray with Wi-Fi stopped")
     arguments.add_argument("--port", type=int, help="Override the saved Wi-Fi port for this launch")
@@ -338,18 +351,19 @@ def main():
     kernel.CreateMutexW.restype = ctypes.c_void_p
     kernel.CloseHandle.argtypes = [ctypes.c_void_p]
     ctypes.set_last_error(0)
+    # Retain the old mutex ID to prevent duplicate services with earlier versions.
     mutex = kernel.CreateMutexW(None, False, r"Local\VirtualLeverlessReceiver.Tray")
     if not mutex:
         raise ctypes.WinError(ctypes.get_last_error())
     try:
         if ctypes.get_last_error() == 183:
-            logger.info("The tray receiver is already running")
+            logger.info("%s is already running", APP_NAME)
             return 0
-        logger.info("Starting tray receiver from %s", sys.executable)
+        logger.info("Starting %s from %s", APP_NAME, sys.executable)
         TrayApplication(log_directory, settings=settings, settings_store=settings_store).run()
     except Exception:
-        logger.exception("Tray receiver failed")
-        ctypes.windll.user32.MessageBoxW(None, f"The receiver could not run. Check:\n{log_directory}", APP_NAME, 0x10)
+        logger.exception("%s failed", APP_NAME)
+        ctypes.windll.user32.MessageBoxW(None, f"{APP_NAME} could not run. Check:\n{log_directory}", APP_NAME, 0x10)
         return 1
     finally:
         kernel.CloseHandle(mutex)
